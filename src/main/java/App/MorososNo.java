@@ -1,18 +1,18 @@
 package App;
 
 import Menus.MenuGeneral;
+import Menus.MenuRankings;
+import Menus.MenuUsuario;
 
 public class MorososNo {
     public static void main(String[] args) {
 
-        Aplicacion app = new Aplicacion();
+
+        GestorMorosos gestor = new GestorMorosos();
+        Aplicacion app = new Aplicacion(new MenuGeneral(gestor), new MenuUsuario(gestor),
+                new MenuRankings(gestor), gestor);
 
         app.iniciar();
-
-        if (app.getUsuarioActual() == null) {
-            MenuGeneral.mostrar();
-            app.seleccionarUsuario(MenuGeneral.seleccionarUsuario());
-        }
 
     }
 }

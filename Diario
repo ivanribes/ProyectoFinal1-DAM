@@ -1,3 +1,6 @@
 · 18-5-26
 Creación del proyecto.
 Revision del diagrama de clases y creacion de clases con atributos y metodos basicos
+Viendo el UML es posible que algunas de las clases trabajen de forma diferente a como esta diseñado
+el UML.
+He movido algunos atributos de las clases a otras donde tenia mas sentido por tema encapsulamiento.

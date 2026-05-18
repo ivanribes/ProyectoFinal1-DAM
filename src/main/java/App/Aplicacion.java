@@ -7,13 +7,83 @@ import Usuarios.Usuario;
 
 public class Aplicacion {
     private Usuario usuarioActual;
-    private MenuGeneral menuGeneral;
-    private MenuUsuario menuUsuario;
-    private MenuRankings menuRankings;
-    private GestorMorosos gestorMorosos = new GestorMorosos();
+    private final MenuGeneral menuGeneral;
+    private final MenuUsuario menuUsuario;
+    private final MenuRankings menuRankings;
+    private final GestorMorosos gestorMorosos;
+
+    public Aplicacion(MenuGeneral menuGeneral, MenuUsuario menuUsuario,
+                      MenuRankings menuRankings, GestorMorosos gestorMorosos) {
+        this.usuarioActual = null;
+        this.menuGeneral = menuGeneral;
+        this.menuUsuario = menuUsuario;
+        this.menuRankings = menuRankings;
+        this.gestorMorosos = gestorMorosos;
+    }
+
+    public MenuGeneral getMenuGeneral() {
+        return menuGeneral;
+    }
+
+    public MenuUsuario getMenuUsuario() {
+        return menuUsuario;
+    }
+
+    public MenuRankings getMenuRankings() {
+        return menuRankings;
+    }
+
+    public GestorMorosos getGestorMorosos() {
+        return gestorMorosos;
+    }
 
     public void iniciar() {
+        cargarUsuarios();
+        ejecutarPrograma();
+    }
 
+    private void ejecutarPrograma() {
+        int opcion;
+        boolean continuar = true;
+
+        do {
+            if (usuarioActual == null) {
+                menuGeneral.mostrar();
+
+                opcion = Integer.parseInt(IO.readln("Selecciona una opcion: "));
+
+                if (opcion == 1) {
+                    seleccionarUsuario(menuGeneral.seleccionarUsuario());
+                } else if (opcion == 2){
+                    continuar = false;
+                    System.out.println("Cerrando aplicación...");
+                } else {
+                    System.out.println("Opción no valida.");
+                }
+            } else {
+                menuUsuario.mostrar();
+
+                opcion = Integer.parseInt(IO.readln("Selecciona una opcion: "));
+
+                switch (opcion) {
+                    case 1 -> menuUsuario.crearEvento();
+                    case 2 -> menuUsuario.anadirParticipantes();
+                    case 3 -> menuUsuario.consultarEventosCreados();
+                    case 4 -> menuUsuario.consultarEventosDondeParticipo();
+                    case 5 -> menuUsuario.consultarTodosMisEventos();
+                    case 6 -> menuUsuario.consultarPagosPendientes();
+                    case 7 -> menuUsuario.confirmarPagos();
+                    case 8 -> menuUsuario.verRankings();
+                    case 9 -> menuUsuario.exportarMisEventos();
+                    case 10 -> cerrarSesion();
+                    default -> System.out.println("Opción no válida");
+                }
+            }
+        } while (continuar);
+
+    }
+
+    private void cargarUsuarios() {
         System.out.println("Cargando aplicacion...");
         gestorMorosos.getUsuarios().add(new Usuario(1, "Carlos Martinez",
                 "carlos.martinez@gmail" + ".com"));
@@ -49,5 +119,6 @@ public class Aplicacion {
 
     public void cerrarSesion() {
         this.usuarioActual = null;
+        System.out.println("Se ha cerrado la sesion 🔒\n");
     }
 }
