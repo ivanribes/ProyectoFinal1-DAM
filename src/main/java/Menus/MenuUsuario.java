@@ -2,6 +2,7 @@ package Menus;
 
 import App.*;
 import Eventos.Evento;
+import Eventos.ParticipanteEvento;
 import Usuarios.Usuario;
 
 public class MenuUsuario {
@@ -31,6 +32,14 @@ public class MenuUsuario {
                 """);
     }
 
+    public Usuario seleccionarUsuario() {
+        gestorMorosos.mostrarUsuarios();
+
+        int id = Integer.parseInt(IO.readln("Introduce el ID del usuario: "));
+
+        return gestorMorosos.buscarUsuarioID(id);
+    }
+
     //region CREAR EVENTO
     public void crearEvento() {
         gestorMorosos.aniadirEvento(new Evento(nombreEvento(), importeEvento(), usuario));
@@ -48,9 +57,36 @@ public class MenuUsuario {
 
     //region AÑADIR PARTICIPANTES
     public void anadirParticipantes() {
+        consultarEventosCreados();
 
+        int idEvento = Integer.parseInt(IO.readln("Introduce el id del evento: "));
+        Evento evento = null;
+
+        for (Evento e : gestorMorosos.getEventos()) {
+            if (e.getId() == idEvento) {
+                evento = e;
+                break;
+            }
+        }
+
+        if (evento != null) {
+            Usuario usuarioAniadir;
+            gestorMorosos.mostrarUsuarios();
+
+            do {
+                usuarioAniadir = seleccionarUsuario();
+
+                evento.aniadirParticipantes(new ParticipanteEvento(usuario, evento,
+                        evento.getImporteTotal()/evento.getParticipantes()));
+                System.out.printf("%S se ha añadido a %S%n", usuarioAniadir.getNombre(),
+                        evento.getNombre() );
+
+            } while (IO.readln("Desea introducir mas participantes? (si-no): ")
+                    .equalsIgnoreCase("si"));
+        } else {
+            System.out.println("No se ha encontrado el evento");
+        }
     }
-
     //endregion
 
     //region CONSULTAR EVENTOS CREADOS
@@ -62,46 +98,48 @@ public class MenuUsuario {
             }
         }
     }
-
     //endregion
 
     //region CONSULTAR EVENTOS DONDE PARTICIPA
 
     public void consultarEventosDondeParticipo() {
-    }
 
+    }
     //endregion
 
     //region CONSULTAR TODOS LOS EVENTOS
 
     public void consultarTodosMisEventos() {
-    }
 
+    }
     //endregion
 
 
     //region CONSULTAR PAGOS PENDIENTES
     public void consultarPagosPendientes() {
-    }
 
+    }
     //endregion
 
     //region CONFIRMAR PAGO
 
     public void confirmarPagos() {
-    }
 
+    }
     //endregion
 
     //region RANKINGS
     public void verRankings() {
-    }
 
+    }
     //endregion
 
     //region EXPORTAR MIS EVENTOS
 
     public void exportarMisEventos() {
+
     }
     //endregion
+
+
 }

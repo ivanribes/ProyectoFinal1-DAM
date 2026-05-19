@@ -53,8 +53,9 @@ public class Aplicacion {
                 opcion = Integer.parseInt(IO.readln("Selecciona una opcion: "));
 
                 if (opcion == 1) {
-                    seleccionarUsuario(menuGeneral.seleccionarUsuario());
+                    this.usuarioActual =  menuUsuario.seleccionarUsuario();
                     menuUsuario.setUsuario(usuarioActual);
+                    System.out.println("Sesion iniciado como " + usuarioActual.getNombre() + "✅\n");
                 } else if (opcion == 2) {
                     continuar = false;
                     System.out.println("Cerrando aplicación...");
@@ -107,9 +108,10 @@ public class Aplicacion {
         return usuarioActual;
     }
 
-    public void seleccionarUsuario(Usuario user) {
-        this.usuarioActual = user;
+    public void seleccionarUsuario() {
+        this.usuarioActual = menuUsuario.seleccionarUsuario();
     }
+
 
     public void cerrarSesion() {
         this.usuarioActual = null;

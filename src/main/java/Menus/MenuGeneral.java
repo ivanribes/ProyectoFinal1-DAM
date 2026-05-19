@@ -18,30 +18,4 @@ public class MenuGeneral {
                 2. Salir
                 """);
     }
-
-    private void mostrarUsuarios() {
-        for (Usuario u: gestorMorosos.getUsuarios()) {
-            System.out.println("User_ID: " + u.getId() + " --> " + u.getEmail());
-        }
-    }
-
-    public Usuario seleccionarUsuario() {
-        Usuario usuario = null;
-        int id;
-
-        mostrarUsuarios();
-        /*Seleccionar uno de los usuarios por id para no poder confundir por nombre
-         */
-        id = Integer.parseInt(IO.readln("Introduce el id del usuario: "));
-
-        for (Usuario u : gestorMorosos.getUsuarios()) {
-            if (id == u.getId())  {
-                System.out.println("Sesion iniciado como " + u.getNombre() + "✅\n");
-                return u;
-            }
-        }
-
-        System.out.println("No se ha encontrado el usuario.");
-        return null;
-    }
 }

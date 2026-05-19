@@ -1,7 +1,6 @@
 package Eventos;
 
 import Usuarios.Usuario;
-import Utilidades.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
 
@@ -25,6 +24,7 @@ public class Evento {
         this.fechaCreacion = LocalDate.now();
         this.fechaPagoLimite = fechaCreacion.plusDays(2);
         this.creador = creador;
+        this.participantes = new ArrayList<>();
     }
 
     public int getId() {
@@ -55,12 +55,21 @@ public class Evento {
         return creador;
     }
 
-    public ArrayList<ParticipanteEvento> getParticipantes() {
-        return participantes;
+    public int getParticipantes() {
+        return participantes.size() +1;
     }
 
     public void aniadirParticipantes(ParticipanteEvento participante) {
         participantes.add(participante);
+        recalcularImporte();
+    }
+
+    private void recalcularImporte() {
+        double importeParticipante = importeTotal/getParticipantes();
+
+        for (ParticipanteEvento p : participantes) {
+            p.setImporteDebe(importeParticipante);
+        }
     }
 }
 

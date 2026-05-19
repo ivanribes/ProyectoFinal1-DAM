@@ -1,28 +1,39 @@
 package Eventos;
 
-import Enums.EstadoPago;
-import Enums.EstadoParticipante;
 import Pagos.Pago;
 import Usuarios.Usuario;
 
 public class ParticipanteEvento {
 
-    private final int ID_PARTICIPANTE;
+    private static int ID_PARTICIPANTE = 0;
 
     private final Usuario usuario;
     private final Evento evento;
-    private double importeDebe;
-    private EstadoPago estadoPago;
     private Pago pago;
 
-    public ParticipanteEvento(int ID_PARTICIPANTE, Usuario usuario, Evento evento,
-                              double importeDebe,
-                              EstadoPago estadoPago, Pago pago) {
-        this.ID_PARTICIPANTE = ID_PARTICIPANTE;
+    public ParticipanteEvento(Usuario usuario, Evento evento,
+                              double importeDebe) {
+        this.ID_PARTICIPANTE = ++ID_PARTICIPANTE;
         this.usuario = usuario;
         this.evento = evento;
-        this.importeDebe = importeDebe;
-        this.estadoPago = estadoPago;
-        this.pago = pago;
+        this.pago = new Pago(importeDebe);
     }
+
+    public Usuario getUsuario() {
+        return usuario;
+    }
+
+    public Evento getEvento() {
+        return evento;
+    }
+
+    public void setImporteDebe(double importeDebe) {
+        pago.setImporte(importeDebe);
+    }
+
+    public Pago getPago() {
+        return pago;
+    }
+
+
 }

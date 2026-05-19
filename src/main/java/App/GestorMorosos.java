@@ -35,5 +35,20 @@ public class GestorMorosos {
         eventos.add(evento);
     }
 
+    public Usuario buscarUsuarioID(int id) {
+        for (Usuario u : usuarios) {
+            if (id == u.getId())  {
+                return u;
+            }
+        }
 
+        System.out.println("No se ha encontrado el usuario");
+        return null;
+    }
+
+    public void mostrarUsuarios() {
+        for (Usuario u: usuarios) {
+            System.out.println("User_ID: " + u.getId() + " --> " + u.getEmail());
+        }
+    }
 }
