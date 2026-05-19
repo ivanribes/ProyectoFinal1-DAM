@@ -1,8 +1,11 @@
 package Eventos;
 
+import Usuarios.ParticipanteEvento;
 import Usuarios.Usuario;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 public class Evento {
 
@@ -57,6 +60,10 @@ public class Evento {
 
     public int getParticipantes() {
         return participantes.size() +1;
+    }
+
+    public List<ParticipanteEvento> getListParticipantes() {
+        return Collections.unmodifiableList(participantes);
     }
 
     public void aniadirParticipantes(ParticipanteEvento participante) {

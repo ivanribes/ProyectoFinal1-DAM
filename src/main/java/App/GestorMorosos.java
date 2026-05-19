@@ -2,9 +2,10 @@ package App;
 
 import Eventos.Evento;
 import Ficheros.GestorFicheros;
+import Pagos.Pago;
+import Usuarios.ParticipanteEvento;
 import Usuarios.Usuario;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -43,6 +44,28 @@ public class GestorMorosos {
         }
 
         System.out.println("No se ha encontrado el usuario");
+        return null;
+    }
+
+    public Evento buscarEvento(int id) {
+        for (Evento e : eventos) {
+            if (id == e.getId())  {
+                return e;
+            }
+        }
+
+        System.out.println("No se ha encontrado el evento");
+        return null;
+    }
+
+    public Pago buscarPago(Evento evento, int idPago) {
+        for (ParticipanteEvento p : evento.getListParticipantes()) {
+            if (p.getPago().getId() == idPago) {
+                return p.getPago();
+            }
+        }
+
+        System.out.println("No se ha encontrado el pago");
         return null;
     }
 

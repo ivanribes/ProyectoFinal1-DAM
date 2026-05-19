@@ -9,13 +9,19 @@ public class Pago {
 
     private static int ID_PAGO = 0;
 
+    private int id;
     private double importe;
     private LocalDate fechaPago;
     private EstadoPago estadoPago;
 
     public Pago(double importe) {
+        this.id = ++ID_PAGO;
         this.importe = importe;
         this.estadoPago = EstadoPago.PENDIENTE;
+    }
+
+    public int getId() {
+        return id;
     }
 
     public double getImporte() {
@@ -34,7 +40,11 @@ public class Pago {
         return estadoPago;
     }
 
-    public void confirmar(Usuario usuario) {
+    public void setEstadoPago(EstadoPago estadoPago) {
+        this.estadoPago = estadoPago;
+    }
+
+    public void confirmarPago() {
         this.fechaPago = LocalDate.now();
     }
 }

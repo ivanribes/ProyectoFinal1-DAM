@@ -1,7 +1,7 @@
-package Eventos;
+package Usuarios;
 
+import Eventos.Evento;
 import Pagos.Pago;
-import Usuarios.Usuario;
 
 public class ParticipanteEvento {
 
@@ -34,6 +34,4 @@ public class ParticipanteEvento {
     public Pago getPago() {
         return pago;
     }
-
-
 }

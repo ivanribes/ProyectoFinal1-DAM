@@ -1,36 +1,17 @@
 package App;
 
-import Menus.MenuGeneral;
-import Menus.MenuRankings;
-import Menus.MenuUsuario;
+import Menu.Menu;
 import Usuarios.Usuario;
 
 public class Aplicacion {
     private Usuario usuarioActual;
-    private final MenuGeneral menuGeneral;
-    private final MenuUsuario menuUsuario;
-    private final MenuRankings menuRankings;
     private final GestorMorosos gestorMorosos;
+    private ServiciosUsuario serviciosUsuario;
 
-    public Aplicacion(MenuGeneral menuGeneral, MenuUsuario menuUsuario, MenuRankings menuRankings,
-                      GestorMorosos gestorMorosos) {
+    public Aplicacion(GestorMorosos gestorMorosos, ServiciosUsuario serviciosUsuario) {
         this.usuarioActual = null;
-        this.menuGeneral = menuGeneral;
-        this.menuUsuario = menuUsuario;
-        this.menuRankings = menuRankings;
         this.gestorMorosos = gestorMorosos;
-    }
-
-    public MenuGeneral getMenuGeneral() {
-        return menuGeneral;
-    }
-
-    public MenuUsuario getMenuUsuario() {
-        return menuUsuario;
-    }
-
-    public MenuRankings getMenuRankings() {
-        return menuRankings;
+        this.serviciosUsuario = serviciosUsuario;
     }
 
     public GestorMorosos getGestorMorosos() {
@@ -48,13 +29,13 @@ public class Aplicacion {
 
         do {
             if (usuarioActual == null) {
-                menuGeneral.mostrar();
+                Menu.mostrarMenuGeneral();
 
                 opcion = Integer.parseInt(IO.readln("Selecciona una opcion: "));
 
                 if (opcion == 1) {
-                    this.usuarioActual =  menuUsuario.seleccionarUsuario();
-                    menuUsuario.setUsuario(usuarioActual);
+                    this.usuarioActual =  serviciosUsuario.seleccionarUsuario();
+                    serviciosUsuario.setUsuario(usuarioActual);
                     System.out.println("Sesion iniciado como " + usuarioActual.getNombre() + "✅\n");
                 } else if (opcion == 2) {
                     continuar = false;
@@ -63,20 +44,20 @@ public class Aplicacion {
                     System.out.println("Opción no valida.");
                 }
             } else {
-                menuUsuario.mostrar();
+                Menu.mostrarMenuUsuario();
 
                 opcion = Integer.parseInt(IO.readln("Selecciona una opcion: "));
 
                 switch (opcion) {
-                    case 1 -> menuUsuario.crearEvento();
-                    case 2 -> menuUsuario.anadirParticipantes();
-                    case 3 -> menuUsuario.consultarEventosCreados();
-                    case 4 -> menuUsuario.consultarEventosDondeParticipo();
-                    case 5 -> menuUsuario.consultarTodosMisEventos();
-                    case 6 -> menuUsuario.consultarPagosPendientes();
-                    case 7 -> menuUsuario.confirmarPagos();
-                    case 8 -> menuUsuario.verRankings();
-                    case 9 -> menuUsuario.exportarMisEventos();
+                    case 1 -> serviciosUsuario.crearEvento();
+                    case 2 -> serviciosUsuario.anadirParticipantes();
+                    case 3 -> serviciosUsuario.consultarEventosCreados();
+                    case 4 -> serviciosUsuario.consultarEventosDondeParticipo();
+                    case 5 -> serviciosUsuario.consultarTodosMisEventos();
+                    case 6 -> serviciosUsuario.consultarPagosPendientes();
+                    case 7 -> serviciosUsuario.confirmarPagos();
+                    case 8 -> serviciosUsuario.verRankings();
+                    case 9 -> serviciosUsuario.exportarMisEventos();
                     case 10 -> cerrarSesion();
                     default -> System.out.println("Opción no válida");
                 }
@@ -109,7 +90,7 @@ public class Aplicacion {
     }
 
     public void seleccionarUsuario() {
-        this.usuarioActual = menuUsuario.seleccionarUsuario();
+        this.usuarioActual = serviciosUsuario.seleccionarUsuario();
     }
 
 
