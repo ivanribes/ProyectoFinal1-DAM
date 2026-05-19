@@ -7,7 +7,6 @@ import Pagos.Pago;
 import Usuarios.ParticipanteEvento;
 import Usuarios.Usuario;
 
-import java.lang.invoke.MutableCallSite;
 
 public class ServiciosUsuario {
     private Usuario usuario;
@@ -114,18 +113,33 @@ public class ServiciosUsuario {
     //endregion
 
     //region CONSULTAR PAGOS PENDIENTES
-    public void consultarPagosPendientes() {
+    public void saldarPagosPendientes() {
+        int id;
+        Pago pago;
+        boolean hayPendientes = false;
+
         for (Evento e : gestorMorosos.getEventos()) {
             for (ParticipanteEvento p : e.getListParticipantes()) {
                 if ((p.getUsuario() == usuario) && (!p.getPago().getEstadoPago()
                         .equals(EstadoPago.PAGADO))) {
-                    System.out.printf("[ID: %d] %S - %S %.2f€%n%n", e.getId(), e.getNombre(),
+                    hayPendientes = true;
+                    System.out.printf("[ID PAGO: %d] %S - %S %.2f€%n%n", p.getPago().getId(),
+                            e.getNombre(),
                             p.getPago().getEstadoPago().toString() ,p.getPago().getImporte());
                 }
             }
         }
 
-        //TODO falta confiramar el pago
+        if (hayPendientes) {
+            id = Integer.parseInt(IO.readln("Introduce el ID del pago a confirmar: "));
+
+            pago = gestorMorosos.buscarPago(id);
+
+            pago.setEstadoPago(EstadoPago.PENDIENTE_CONFIRMAR);
+            System.out.println(pago.getEstadoPago());
+        } else {
+            System.out.println("No hay pagos pendientes");
+        }
     }
     //endregion
 
@@ -135,6 +149,7 @@ public class ServiciosUsuario {
         Evento evento;
         Pago pago;
         int opcion;
+        boolean hayPagos = false;
         consultarEventosCreados();
 
         int id = Integer.parseInt(IO.readln("Introduce el ID del evento: "));
@@ -146,21 +161,27 @@ public class ServiciosUsuario {
             if (p.getPago().getEstadoPago().equals(EstadoPago.PENDIENTE_CONFIRMAR)) {
                 System.out.printf("[ID: %d] %S %.2f€%n", p.getPago().getId(),
                         p.getUsuario().getNombre(), p.getPago().getImporte());
+                hayPagos = true;
             }
         }
 
-        id = Integer.parseInt(IO.readln("Introduce el ID del pago: "));
+        if (hayPagos) {
 
-        pago = gestorMorosos.buscarPago(evento, id);
+            id = Integer.parseInt(IO.readln("Introduce el ID del pago: "));
 
-        Menu.mostrarMenuPago();
-        opcion = Integer.parseInt(IO.readln("Selecciona una opcion: "));
+            pago = gestorMorosos.buscarPago(evento, id);
 
-        switch (opcion) {
-            case 1-> pago.setEstadoPago(EstadoPago.PAGADO);
-            case 2-> pago.setEstadoPago(EstadoPago.RECHAZADO);
-            case 3-> pago.setEstadoPago(EstadoPago.PENDIENTE_CONFIRMAR);
-            default -> System.out.printf("Opcion no valida%n");
+            Menu.mostrarMenuPago();
+            opcion = Integer.parseInt(IO.readln("Selecciona una opcion: "));
+
+            switch (opcion) {
+                case 1-> pago.setEstadoPago(EstadoPago.PAGADO);
+                case 2-> pago.setEstadoPago(EstadoPago.RECHAZADO);
+                case 3-> pago.setEstadoPago(EstadoPago.PENDIENTE_CONFIRMAR);
+                default -> System.out.printf("Opcion no valida%n");
+            }
+        } else {
+            System.out.println("No hay pagos pendientes de confirmar.");
         }
     }
     //endregion

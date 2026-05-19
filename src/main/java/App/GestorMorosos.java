@@ -69,6 +69,21 @@ public class GestorMorosos {
         return null;
     }
 
+    public Pago buscarPago(int idPago) {
+        for (Evento e: eventos) {
+            for (ParticipanteEvento p : e.getListParticipantes()) {
+                if (p.getPago().getId() == idPago) {
+                    return p.getPago();
+                }
+            }
+        }
+
+        System.out.println("No se ha encontrado el pago");
+        return null;
+    }
+
+
+
     public void mostrarUsuarios() {
         for (Usuario u: usuarios) {
             System.out.println("User_ID: " + u.getId() + " --> " + u.getEmail());

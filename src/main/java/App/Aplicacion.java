@@ -54,7 +54,7 @@ public class Aplicacion {
                     case 3 -> serviciosUsuario.consultarEventosCreados();
                     case 4 -> serviciosUsuario.consultarEventosDondeParticipo();
                     case 5 -> serviciosUsuario.consultarTodosMisEventos();
-                    case 6 -> serviciosUsuario.consultarPagosPendientes();
+                    case 6 -> serviciosUsuario.saldarPagosPendientes();
                     case 7 -> serviciosUsuario.confirmarPagos();
                     case 8 -> serviciosUsuario.verRankings();
                     case 9 -> serviciosUsuario.exportarMisEventos();
