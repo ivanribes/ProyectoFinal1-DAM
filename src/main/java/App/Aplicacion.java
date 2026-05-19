@@ -12,8 +12,8 @@ public class Aplicacion {
     private final MenuRankings menuRankings;
     private final GestorMorosos gestorMorosos;
 
-    public Aplicacion(MenuGeneral menuGeneral, MenuUsuario menuUsuario,
-                      MenuRankings menuRankings, GestorMorosos gestorMorosos) {
+    public Aplicacion(MenuGeneral menuGeneral, MenuUsuario menuUsuario, MenuRankings menuRankings,
+                      GestorMorosos gestorMorosos) {
         this.usuarioActual = null;
         this.menuGeneral = menuGeneral;
         this.menuUsuario = menuUsuario;
@@ -54,7 +54,8 @@ public class Aplicacion {
 
                 if (opcion == 1) {
                     seleccionarUsuario(menuGeneral.seleccionarUsuario());
-                } else if (opcion == 2){
+                    menuUsuario.setUsuario(usuarioActual);
+                } else if (opcion == 2) {
                     continuar = false;
                     System.out.println("Cerrando aplicación...");
                 } else {
@@ -80,31 +81,24 @@ public class Aplicacion {
                 }
             }
         } while (continuar);
-
     }
 
     private void cargarUsuarios() {
         System.out.println("Cargando aplicacion...");
-        gestorMorosos.getUsuarios().add(new Usuario(1, "Carlos Martinez",
-                "carlos.martinez@gmail" + ".com"));
-        gestorMorosos.getUsuarios().add(new Usuario(2, "Laura Gomez",
-                "laura.gomez@gmail.com"));
-        gestorMorosos.getUsuarios().add(new Usuario(3, "David Fernandez",
-                "david.fernandez@gmail" + ".com"));
-        gestorMorosos.getUsuarios().add(new Usuario(4, "Marta Lopez",
-                "marta.lopez@gmail.com"));
-        gestorMorosos.getUsuarios().add(new Usuario(5, "Sergio Navarro",
-                "sergio.navarro@gmail" + ".com"));
-        gestorMorosos.getUsuarios().add(new Usuario(6, "Andrea Ruiz",
-                "andrea.ruiz@gmail.com"));
-        gestorMorosos.getUsuarios().add(new Usuario(7, "Pablo Torres",
-                "pablo.torres@gmail.com"));
-        gestorMorosos.getUsuarios().add(new Usuario(8, "Lucia Moreno",
-                "lucia.moreno@gmail.com"));
-        gestorMorosos.getUsuarios().add(new Usuario(9, "Javier Castillo",
-                "javier.castillo@gmail" + ".com"));
-        gestorMorosos.getUsuarios().add(new Usuario(10, "Elena Romero",
-                "elena.romero@gmail.com"));
+
+        gestorMorosos.aniadirUsuario(
+                new Usuario(1, "Carlos Martinez", "carlos.martinez@gmail" + ".com"));
+        gestorMorosos.aniadirUsuario(new Usuario(2, "Laura Gomez", "laura.gomez@gmail.com"));
+        gestorMorosos.aniadirUsuario(
+                new Usuario(3, "David Fernandez", "david.fernandez@gmail" + ".com"));
+        gestorMorosos.aniadirUsuario(new Usuario(4, "Marta Lopez", "marta.lopez@gmail.com"));
+        gestorMorosos.aniadirUsuario(new Usuario(5, "Sergio Navarro", "sergio.navarro@gmail.com"));
+        gestorMorosos.aniadirUsuario(new Usuario(6, "Andrea Ruiz", "andrea.ruiz@gmail.com"));
+        gestorMorosos.aniadirUsuario(new Usuario(7, "Pablo Torres", "pablo.torres@gmail.com"));
+        gestorMorosos.aniadirUsuario(new Usuario(8, "Lucia Moreno", "lucia.moreno@gmail.com"));
+        gestorMorosos.aniadirUsuario(
+                new Usuario(9, "Javier Castillo", "javier.castillo@gmail" + ".com"));
+        gestorMorosos.aniadirUsuario(new Usuario(10, "Elena Romero", "elena.romero@gmail.com"));
 
         // En caso de implementar base de datos se eliminaria esta carga manual
     }

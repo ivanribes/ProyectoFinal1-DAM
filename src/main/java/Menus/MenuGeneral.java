@@ -36,12 +36,12 @@ public class MenuGeneral {
 
         for (Usuario u : gestorMorosos.getUsuarios()) {
             if (id == u.getId())  {
-                usuario = u;
                 System.out.println("Sesion iniciado como " + u.getNombre() + "✅\n");
-                break;
+                return u;
             }
         }
 
-        return usuario;
+        System.out.println("No se ha encontrado el usuario.");
+        return null;
     }
 }

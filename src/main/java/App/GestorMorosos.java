@@ -4,6 +4,9 @@ import Eventos.Evento;
 import Ficheros.GestorFicheros;
 import Usuarios.Usuario;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 
 public class GestorMorosos {
     private ArrayList<Usuario> usuarios;
@@ -16,15 +19,21 @@ public class GestorMorosos {
         this.gestorFicheros = new GestorFicheros();
     }
 
-    public ArrayList<Usuario> getUsuarios() {
-        return usuarios;
+    public List<Usuario> getUsuarios() {
+        return Collections.unmodifiableList(usuarios);
     }
 
-    public ArrayList<Evento> getEventos() {
-        return eventos;
+    public List<Evento> getEventos() {
+        return Collections.unmodifiableList(eventos);
     }
 
-    public void crearEvento(Usuario user, Evento event) {
-
+    public void aniadirUsuario(Usuario user) {
+        usuarios.add(user);
     }
+
+    public void aniadirEvento(Evento evento) {
+        eventos.add(evento);
+    }
+
+
 }

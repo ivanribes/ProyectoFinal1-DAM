@@ -13,6 +13,5 @@ public class MorososNo {
                 new MenuRankings(gestor), gestor);
 
         app.iniciar();
-
     }
 }
