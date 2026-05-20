@@ -20,10 +20,6 @@ public class GestorMorosos {
         this.gestorFicheros = new GestorFicheros();
     }
 
-    public List<Usuario> getUsuarios() {
-        return Collections.unmodifiableList(usuarios);
-    }
-
     public List<Evento> getEventos() {
         return Collections.unmodifiableList(eventos);
     }
@@ -81,8 +77,6 @@ public class GestorMorosos {
         System.out.println("No se ha encontrado el pago");
         return null;
     }
-
-
 
     public void mostrarUsuarios() {
         for (Usuario u: usuarios) {

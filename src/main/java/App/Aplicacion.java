@@ -33,11 +33,12 @@ public class Aplicacion {
 
                 opcion = Integer.parseInt(IO.readln("Selecciona una opcion: "));
 
+                //TODO cambiar a switch con registrar usuario
                 if (opcion == 1) {
                     this.usuarioActual =  serviciosUsuario.seleccionarUsuario();
                     serviciosUsuario.setUsuario(usuarioActual);
                     System.out.println("Sesion iniciado como " + usuarioActual.getNombre() + "✅\n");
-                } else if (opcion == 2) {
+                } else if (opcion == 3) {
                     continuar = false;
                     System.out.println("Cerrando aplicación...");
                 } else {
@@ -54,11 +55,13 @@ public class Aplicacion {
                     case 3 -> serviciosUsuario.consultarEventosCreados();
                     case 4 -> serviciosUsuario.consultarEventosDondeParticipo();
                     case 5 -> serviciosUsuario.consultarTodosMisEventos();
-                    case 6 -> serviciosUsuario.saldarPagosPendientes();
-                    case 7 -> serviciosUsuario.confirmarPagos();
-                    case 8 -> serviciosUsuario.verRankings();
-                    case 9 -> serviciosUsuario.exportarMisEventos();
-                    case 10 -> cerrarSesion();
+                    case 6 -> serviciosUsuario.consultarPagosPendientes();
+                    case 7 -> serviciosUsuario.saldarPagos();
+                    case 8 -> serviciosUsuario.confirmarPagos();
+                    case 9 -> serviciosUsuario.verRankings();
+                    case 10 -> serviciosUsuario.exportarMisEventos();
+                    case 11 -> serviciosUsuario.desactivarUsuario();
+                    case 12 -> cerrarSesion();
                     default -> System.out.println("Opción no válida");
                 }
             }
@@ -69,18 +72,25 @@ public class Aplicacion {
         System.out.println("Cargando aplicacion...");
 
         gestorMorosos.aniadirUsuario(
-                new Usuario(1, "Carlos Martinez", "carlos.martinez@gmail" + ".com"));
-        gestorMorosos.aniadirUsuario(new Usuario(2, "Laura Gomez", "laura.gomez@gmail.com"));
+                new Usuario(1, "Carlos Martinez", "carlos.martinez@gmail.com"));
         gestorMorosos.aniadirUsuario(
-                new Usuario(3, "David Fernandez", "david.fernandez@gmail" + ".com"));
-        gestorMorosos.aniadirUsuario(new Usuario(4, "Marta Lopez", "marta.lopez@gmail.com"));
-        gestorMorosos.aniadirUsuario(new Usuario(5, "Sergio Navarro", "sergio.navarro@gmail.com"));
-        gestorMorosos.aniadirUsuario(new Usuario(6, "Andrea Ruiz", "andrea.ruiz@gmail.com"));
-        gestorMorosos.aniadirUsuario(new Usuario(7, "Pablo Torres", "pablo.torres@gmail.com"));
-        gestorMorosos.aniadirUsuario(new Usuario(8, "Lucia Moreno", "lucia.moreno@gmail.com"));
+                new Usuario(2, "Laura Gomez", "laura.gomez@gmail.com"));
         gestorMorosos.aniadirUsuario(
-                new Usuario(9, "Javier Castillo", "javier.castillo@gmail" + ".com"));
-        gestorMorosos.aniadirUsuario(new Usuario(10, "Elena Romero", "elena.romero@gmail.com"));
+                new Usuario(3, "David Fernandez", "david.fernandez@gmail.com"));
+        gestorMorosos.aniadirUsuario(
+                new Usuario(4, "Marta Lopez", "marta.lopez@gmail.com"));
+        gestorMorosos.aniadirUsuario(
+                new Usuario(5, "Sergio Navarro", "sergio.navarro@gmail.com"));
+        gestorMorosos.aniadirUsuario(
+                new Usuario(6, "Andrea Ruiz", "andrea.ruiz@gmail.com"));
+        gestorMorosos.aniadirUsuario(
+                new Usuario(7, "Pablo Torres", "pablo.torres@gmail.com"));
+        gestorMorosos.aniadirUsuario(
+                new Usuario(8, "Lucia Moreno", "lucia.moreno@gmail.com"));
+        gestorMorosos.aniadirUsuario(
+                new Usuario(9, "Javier Castillo", "javier.castillo@gmail.com"));
+        gestorMorosos.aniadirUsuario(
+                new Usuario(10, "Elena Romero", "elena.romero@gmail.com"));
 
         // En caso de implementar base de datos se eliminaria esta carga manual
     }

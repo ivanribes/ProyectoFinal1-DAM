@@ -10,3 +10,9 @@ Pido a la ia ayuda con los date, opinion sobre modificación de los atributos y 
 y sobre que orden seguir a la hora de trabajar para evitar marearme saltando entre clases.
 Consulto a la ia sobre las mejores formas de mantener encapsulamiento, me recomienda Collections
 .unmodifiableList, y investigo sobre la diferencia entre list y arraylist.
+Implemento metodos de mostrar y confirmaciones de pago.
+Me he planteado incluir una clase abstracta en menu y rankings, y una interfaz penalizable en pago.
+· 20-5-26
+Termino confirmacion de pagos
+Implementar penalizaciones
+Comenzar rankings

@@ -13,6 +13,10 @@ public enum EstadoPago {
         this.texto = texto;
     }
 
+    public String getTexto() {
+        return texto;
+    }
+
     @Override public String toString() {
         return texto;
     }

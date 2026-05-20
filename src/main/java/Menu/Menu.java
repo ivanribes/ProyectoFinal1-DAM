@@ -6,9 +6,9 @@ public class Menu {
 
         System.out.println("""
                 === MENU GENERAL ===
-                1. Iniciar sesion
-                -. Falta registrar usuario
-                2. Salir
+                1. Iniciar sesión
+                2. Registrar usuario
+                3. Salir
                 """);
     }
 
@@ -21,11 +21,13 @@ public class Menu {
                 4. Consultar eventos donde participo
                 5. Consultar todos mis eventos
                 6. Consultar pagos pendientes
-                7. Confirmar pagos
-                8. Ver rankings
-                9. Exportar mis eventos
-                10. Cerrar sesión
-                11- Deshabilitar usuario falta implementar
+                7. Saldar pagos pendientes
+                8. Confirmar pagos
+                9. Ver rankings
+                10. Exportar mis eventos
+                11. Deshabilitar usuario falta implementar
+                12. Cerrar sesión
+               
                 """);
     }
 

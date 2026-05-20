@@ -7,10 +7,9 @@ import Pagos.Pago;
 import Usuarios.ParticipanteEvento;
 import Usuarios.Usuario;
 
-
 public class ServiciosUsuario {
     private Usuario usuario;
-    private GestorMorosos gestorMorosos;
+    private final GestorMorosos gestorMorosos;
 
     public ServiciosUsuario(GestorMorosos gestor) {
         this.gestorMorosos = gestor;
@@ -45,59 +44,72 @@ public class ServiciosUsuario {
 
     //region AÑADIR PARTICIPANTES
     public void anadirParticipantes() {
-        consultarEventosCreados();
+        Evento evento;
+        if (consultarEventosCreados()) {
+            int idEvento = Integer.parseInt(IO.readln("Introduce el id del evento: "));
 
-        int idEvento = Integer.parseInt(IO.readln("Introduce el id del evento: "));
-        Evento evento = null;
+            evento = gestorMorosos.buscarEvento(idEvento);
 
-        for (Evento e : gestorMorosos.getEventos()) {
-            if (e.getId() == idEvento) {
-                evento = e;
-                break;
+            if (evento != null) {
+                Usuario usuarioAniadir;
+                gestorMorosos.mostrarUsuarios();
+
+                do {
+                    usuarioAniadir = seleccionarUsuario();
+
+                    evento.aniadirParticipantes(new ParticipanteEvento(usuarioAniadir, evento,
+                            evento.getImporteTotal() / evento.getParticipantes()));
+                    System.out.printf("%S se ha añadido a %S👤✅%n%n", usuarioAniadir.getNombre(),
+                            evento.getNombre());
+
+                } while (IO.readln("Desea introducir mas participantes? (si-no): ")
+                        .equalsIgnoreCase("si"));
+            } else {
+                System.out.println("No se ha encontrado el evento⚠️\n");
             }
-        }
-
-        if (evento != null) {
-            Usuario usuarioAniadir;
-            gestorMorosos.mostrarUsuarios();
-
-            do {
-                usuarioAniadir = seleccionarUsuario();
-
-                evento.aniadirParticipantes(new ParticipanteEvento(usuarioAniadir, evento,
-                        evento.getImporteTotal()/evento.getParticipantes()));
-                System.out.printf("%S se ha añadido a %S%n%n", usuarioAniadir.getNombre(),
-                        evento.getNombre() );
-
-            } while (IO.readln("Desea introducir mas participantes? (si-no): ")
-                    .equalsIgnoreCase("si"));
         } else {
-            System.out.println("No se ha encontrado el evento");
+            System.out.println("No hay eventos creados.\n");
         }
     }
     //endregion
 
     //region CONSULTAR EVENTOS CREADOS
 
-    public void consultarEventosCreados() {
+    public boolean consultarEventosCreados() {
+        boolean hayEventos = false;
         for (Evento e : gestorMorosos.getEventos()) {
             if (e.getCreador() == usuario) {
-                System.out.printf("[ID: %d] - %s - Importe: %.2f€ %n%n",e.getId(), e.getNombre(), e.getImporteTotal());
+                hayEventos = true;
+                System.out.printf("[ID: %d] - %s - Importe Total: %.2f€ %n%n", e.getId(),
+                        e.getNombre(), e.getImporteTotal());
             }
         }
+
+        System.out.println();
+        if (!hayEventos) {
+            System.out.println("No hay eventos creados.");
+        }
+        return hayEventos;
     }
     //endregion
 
     //region CONSULTAR EVENTOS DONDE PARTICIPA
 
     public void consultarEventosDondeParticipo() {
+        boolean hayEventos = false;
         for (Evento e : gestorMorosos.getEventos()) {
             for (ParticipanteEvento p : e.getListParticipantes()) {
                 if (p.getUsuario() == usuario) {
-                    System.out.printf("[ID: %d] %S - %.2f€%n%n", e.getId(), e.getNombre(),
-                            p.getPago().getImporte());
+                    hayEventos = true;
+                    System.out.printf("[ID: %d] %S - %.2f€ %S%n%n", e.getId(), e.getNombre(),
+                            p.getPago().getImporte(), p.getPago().getEstadoPago());
                 }
             }
+        }
+
+        System.out.println();
+        if (!hayEventos) {
+            System.out.println("No participas en ningún evento.\n");
         }
     }
     //endregion
@@ -113,32 +125,39 @@ public class ServiciosUsuario {
     //endregion
 
     //region CONSULTAR PAGOS PENDIENTES
-    public void saldarPagosPendientes() {
-        int id;
-        Pago pago;
+    public boolean consultarPagosPendientes() {
         boolean hayPendientes = false;
 
         for (Evento e : gestorMorosos.getEventos()) {
             for (ParticipanteEvento p : e.getListParticipantes()) {
-                if ((p.getUsuario() == usuario) && (!p.getPago().getEstadoPago()
-                        .equals(EstadoPago.PAGADO))) {
+                if ((p.getUsuario() == usuario) &&
+                        (p.getPago().getEstadoPago() == EstadoPago.PENDIENTE)) {
                     hayPendientes = true;
                     System.out.printf("[ID PAGO: %d] %S - %S %.2f€%n%n", p.getPago().getId(),
                             e.getNombre(),
-                            p.getPago().getEstadoPago().toString() ,p.getPago().getImporte());
+                            p.getPago().getEstadoPago(), p.getPago().getImporte());
                 }
             }
         }
+        return hayPendientes;
+    }
+    //endregion
 
-        if (hayPendientes) {
+    //region SALDAR PAGOS
+    public void saldarPagos() {
+        int id;
+        Pago pago;
+        if (consultarPagosPendientes()) {
+
             id = Integer.parseInt(IO.readln("Introduce el ID del pago a confirmar: "));
 
             pago = gestorMorosos.buscarPago(id);
 
             pago.setEstadoPago(EstadoPago.PENDIENTE_CONFIRMAR);
             System.out.println(pago.getEstadoPago());
+
         } else {
-            System.out.println("No hay pagos pendientes");
+            System.out.println("No hay pagos pendientes\n");
         }
     }
     //endregion
@@ -158,7 +177,7 @@ public class ServiciosUsuario {
 
         System.out.println("PAGOS PENDIENTES DE CONFIRMAR:");
         for (ParticipanteEvento p : evento.getListParticipantes()) {
-            if (p.getPago().getEstadoPago().equals(EstadoPago.PENDIENTE_CONFIRMAR)) {
+            if (p.getPago().getEstadoPago() == EstadoPago.PENDIENTE_CONFIRMAR) {
                 System.out.printf("[ID: %d] %S %.2f€%n", p.getPago().getId(),
                         p.getUsuario().getNombre(), p.getPago().getImporte());
                 hayPagos = true;
@@ -175,29 +194,33 @@ public class ServiciosUsuario {
             opcion = Integer.parseInt(IO.readln("Selecciona una opcion: "));
 
             switch (opcion) {
-                case 1-> pago.setEstadoPago(EstadoPago.PAGADO);
-                case 2-> pago.setEstadoPago(EstadoPago.RECHAZADO);
-                case 3-> pago.setEstadoPago(EstadoPago.PENDIENTE_CONFIRMAR);
-                default -> System.out.printf("Opcion no valida%n");
+                case 1 -> pago.setEstadoPago(EstadoPago.PAGADO);
+                case 2 -> pago.setEstadoPago(EstadoPago.RECHAZADO);
+                case 3 -> pago.setEstadoPago(EstadoPago.PENDIENTE_CONFIRMAR);
+                default -> System.out.printf("Opción no valida%n");
             }
         } else {
-            System.out.println("No hay pagos pendientes de confirmar.");
+            System.out.println("No hay pagos pendientes de confirmar.\n");
         }
     }
     //endregion
 
     //region RANKINGS
     public void verRankings() {
-
+        System.out.println("menu ranking y demás movidas");
     }
     //endregion
 
     //region EXPORTAR MIS EVENTOS
 
     public void exportarMisEventos() {
-
+        System.out.println("ficheros y tal");
     }
     //endregion
 
-
+    //region DESACTIVAR USUARIO
+    public void desactivarUsuario() {
+        usuario.setActivo(false);
+    }
+    //endregion
 }
