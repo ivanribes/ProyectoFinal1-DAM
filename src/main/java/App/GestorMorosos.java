@@ -27,6 +27,14 @@ public class GestorMorosos {
         this.fechaModificada = LocalDate.now();
     }
 
+    public LocalDate getFechaModificada() {
+        return fechaModificada;
+    }
+
+    public List<Usuario> getUsuarios() {
+        return Collections.unmodifiableList(usuarios);
+    }
+
     public List<Evento> getEventos() {
         return Collections.unmodifiableList(eventos);
     }
@@ -101,6 +109,15 @@ public class GestorMorosos {
     public void mostrarUsuarios() {
         for (Usuario u: usuarios) {
             System.out.println("User_ID: " + u.getId() + " --> " + u.getEmail());
+        }
+    }
+
+    public void actualizarPenalizaciones() {
+        for (Evento e : eventos) {
+            for (ParticipanteEvento p : e.getListParticipantes()) {
+               p.getPago().setPenalizacionAplicada(p.getPago()
+                       .calcularPenalizacion(e.getFechaPagoLimite(), fechaModificada));
+            }
         }
     }
 }

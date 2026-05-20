@@ -4,15 +4,18 @@ import Enums.EstadoPago;
 import Eventos.Evento;
 import Menu.Menu;
 import Pagos.Pago;
+import Rankings.Ranking;
 import Usuarios.ParticipanteEvento;
 import Usuarios.Usuario;
 
 public class ServiciosUsuario {
     private Usuario usuario;
     private final GestorMorosos gestorMorosos;
+    private Ranking ranking;
 
-    public ServiciosUsuario(GestorMorosos gestor) {
+    public ServiciosUsuario(GestorMorosos gestor, Ranking ranking) {
         this.gestorMorosos = gestor;
+        this.ranking = ranking;
     }
 
     public void setUsuario(Usuario usuario) {
@@ -80,8 +83,21 @@ public class ServiciosUsuario {
         for (Evento e : gestorMorosos.getEventos()) {
             if (e.getCreador() == usuario) {
                 hayEventos = true;
-                System.out.printf("[ID: %d] - %s - Importe Total: %.2f€ %n%n", e.getId(),
-                        e.getNombre(), e.getImporteTotal());
+                System.out.printf("""
+                                [ID EVENTO: %d]
+                                Nombre: %s
+                                Importe total evento: %.2f€
+                                Participantes: %d
+                                Fecha creación: %s
+                                Fecha límite: %s
+                                
+                                """,
+                        e.getId(),
+                        e.getNombre(),
+                        e.getImporteTotal(),
+                        e.getListParticipantes().size(),
+                        e.getFechaCreacion(),
+                        e.getFechaPagoLimite());
             }
         }
 
@@ -101,8 +117,25 @@ public class ServiciosUsuario {
             for (ParticipanteEvento p : e.getListParticipantes()) {
                 if (p.getUsuario() == usuario) {
                     hayEventos = true;
-                    System.out.printf("[ID: %d] %S - %.2f€ %S%n%n", e.getId(), e.getNombre(),
-                            p.getPago().getImporteBase(), p.getPago().getEstadoPago());
+                    //region CONSULTAR EVENTOS DONDE PARTICIPO
+
+                    System.out.printf("""
+                                    [ID EVENTO: %d]
+                                    Evento: %s
+                                    Estado pago: %s
+                                    Importe base: %.2f€
+                                    Penalización: %s
+                                    Importe total: %.2f€
+                                    
+                                    """,
+                            e.getId(),
+                            e.getNombre(),
+                            p.getPago().getEstadoPago(),
+                            p.getPago().getImporteBase(),
+                            p.getPago().getPenalizacionAplicada() > 0
+                                    ? String.format("%.2f€", p.getPago().getPenalizacionAplicada())
+                                    : "Sin penalización",
+                            (p.getPago().getImporteBase() + p.getPago().getPenalizacionAplicada()));
                 }
             }
         }
@@ -133,12 +166,33 @@ public class ServiciosUsuario {
                 if ((p.getUsuario() == usuario) &&
                         (p.getPago().getEstadoPago() == EstadoPago.PENDIENTE)) {
                     hayPendientes = true;
-                    System.out.printf("[ID PAGO: %d] %S - %S %.2f€%n%n", p.getPago().getId(),
+                    System.out.printf("""
+                                    [ID PAGO: %d]
+                                    Evento: %s
+                                    Estado: %s
+                                    Importe base: %.2f€
+                                    Penalización actual: %s
+                                    Total pendiente: %.2f€
+                                    Fecha límite: %s
+                                    
+                                    """,
+                            p.getPago().getId(),
                             e.getNombre(),
-                            p.getPago().getEstadoPago(), p.getPago().getImporteBase());
+                            p.getPago().getEstadoPago(),
+                            p.getPago().getImporteBase(),
+                            p.getPago().getPenalizacionAplicada() > 0
+                                    ? String.format("%.2f€", p.getPago().getPenalizacionAplicada())
+                                    : "Sin penalización",
+                            p.getPago().getImporteBase() + p.getPago().getPenalizacionAplicada(),
+                            e.getFechaPagoLimite());
                 }
             }
         }
+
+        if (!hayPendientes) {
+            System.out.println("No hay pagos pendientes.");
+        }
+
         return hayPendientes;
     }
     //endregion
@@ -154,6 +208,7 @@ public class ServiciosUsuario {
             pago = gestorMorosos.buscarPago(id);
 
             pago.setEstadoPago(EstadoPago.PENDIENTE_CONFIRMAR);
+            pago.setFechaPago(gestorMorosos.getFechaModificada());
 
         } else {
             System.out.println("No hay pagos pendientes\n");
@@ -177,8 +232,30 @@ public class ServiciosUsuario {
         System.out.println("PAGOS PENDIENTES DE CONFIRMAR:");
         for (ParticipanteEvento p : evento.getListParticipantes()) {
             if (p.getPago().getEstadoPago() == EstadoPago.PENDIENTE_CONFIRMAR) {
-                System.out.printf("[ID: %d] %S %.2f€%n", p.getPago().getId(),
-                        p.getUsuario().getNombre(), p.getPago().getImporteBase());
+                //region CONFIRMAR PAGOS
+
+                System.out.printf("""
+                                [ID PAGO: %d]
+                                Usuario: %s
+                                Estado: %s
+                                Importe base: %.2f€
+                                Penalización: %s
+                                Importe total: %.2f€
+                                Fecha pago: %s
+                                
+                                """,
+                        p.getPago().getId(),
+                        p.getUsuario().getNombre(),
+                        p.getPago().getEstadoPago(),
+                        p.getPago().getImporteBase(),
+                        p.getPago().getPenalizacionAplicada() > 0
+                                ? String.format("%.2f€", p.getPago().getPenalizacionAplicada())
+                                : "Sin penalización",
+                        p.getPago().getImporteBase() + p.getPago().getPenalizacionAplicada(),
+                        p.getPago().getFechaPago() != null
+                                ? p.getPago().getFechaPago()
+                                : "No realizado"
+                );
                 hayPagos = true;
             }
         }
@@ -193,9 +270,7 @@ public class ServiciosUsuario {
             opcion = Integer.parseInt(IO.readln("Selecciona una opcion: "));
 
             switch (opcion) {
-                case 1 -> {
-
-                }
+                case 1 -> pago.setEstadoPago(EstadoPago.PAGADO);
                 case 2 -> pago.setEstadoPago(EstadoPago.RECHAZADO);
                 case 3 -> pago.setEstadoPago(EstadoPago.PENDIENTE_CONFIRMAR);
                 default -> System.out.printf("Opción no valida%n");
@@ -208,7 +283,17 @@ public class ServiciosUsuario {
 
     //region RANKINGS
     public void verRankings() {
-        System.out.println("menu ranking y demás movidas");
+        Menu.mostrarMenuRankings();
+
+        int opcion = Integer.parseInt(IO.readln("Selecciona una opcion: "));
+
+        switch (opcion) {
+            case 1->
+                case 2->
+                    case 3->
+                        case 4-> System.out.println();
+                            default ->
+        }
     }
     //endregion
 

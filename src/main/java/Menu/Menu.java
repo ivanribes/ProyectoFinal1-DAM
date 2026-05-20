@@ -40,4 +40,15 @@ public class Menu {
                 3. Volver
                 """);
     }
+
+    public static void  mostrarMenuRankings() {
+        System.out.println("""
+                === MENU RANKINGS ===
+                1. RANKING MOROSOS
+                2. RANKING EVENTOS CREADOS
+                3. RANKING MAS PENALIZACIÓN PAGADA
+                4. SALIR
+                """);
+    }
+
 }

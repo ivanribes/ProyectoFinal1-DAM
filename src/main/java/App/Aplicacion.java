@@ -33,8 +33,6 @@ public class Aplicacion {
 
                 opcion = Integer.parseInt(IO.readln("Selecciona una opcion: "));
 
-                //TODO cambiar a switch con registrar usuario
-
                 switch (opcion) {
                     case 1-> {
                         this.usuarioActual = serviciosUsuario.seleccionarUsuario();
@@ -42,7 +40,10 @@ public class Aplicacion {
                         System.out.println("Sesion iniciado como " + usuarioActual.getNombre() + "✅\n");
                     }
                     case 2-> System.out.println("registrar");
-                    case 3->gestorMorosos.sumarDias();
+                    case 3->{
+                        gestorMorosos.sumarDias();
+                        gestorMorosos.actualizarPenalizaciones();
+                    }
                     case 4->gestorMorosos.mostrarFecha();
                     case 5-> {
                         continuar = false;

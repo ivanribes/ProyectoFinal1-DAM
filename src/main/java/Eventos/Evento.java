@@ -17,7 +17,7 @@ public class Evento {
     private double importeTotal;
     private final LocalDate fechaCreacion;
     private final LocalDate fechaPagoLimite;
-    private Usuario creador;
+    private final Usuario creador;
     private ArrayList<ParticipanteEvento> participantes;
 
     public Evento(String nombre, double importeTotal, Usuario creador) {
