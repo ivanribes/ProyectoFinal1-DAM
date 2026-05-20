@@ -7,8 +7,10 @@ public class Menu {
         System.out.println("""
                 === MENU GENERAL ===
                 1. Iniciar sesión
-                2. Registrar usuario
-                3. Salir
+                2. Registrar usuario (No implementado)
+                3. Sumar dias
+                4. Mostrar fecha modificada
+                5. Salir
                 """);
     }
 
@@ -27,7 +29,6 @@ public class Menu {
                 10. Exportar mis eventos
                 11. Deshabilitar usuario falta implementar
                 12. Cerrar sesión
-               
                 """);
     }
 

@@ -14,5 +14,10 @@ Implemento metodos de mostrar y confirmaciones de pago.
 Me he planteado incluir una clase abstracta en menu y rankings, y una interfaz penalizable en pago.
 · 20-5-26
 Termino confirmacion de pagos
-Implementar penalizaciones
+Implementar penalizaciones, he añadido las opciones de modificar fecha actual y mostar fecha en el
+menu general para asi poder hacer pruebas con las penalizaciones.
 Comenzar rankings
+
+//OTROS
+Limitar la posibilidad de añadirse a uno mismo a su evento y de añadir a usuarios que ta estan en
+ese evento.

@@ -28,7 +28,7 @@ public class ParticipanteEvento {
     }
 
     public void setImporteDebe(double importeDebe) {
-        pago.setImporte(importeDebe);
+        pago.setImporteBase(importeDebe);
     }
 
     public Pago getPago() {

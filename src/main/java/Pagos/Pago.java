@@ -1,7 +1,6 @@
 package Pagos;
 
 import Enums.EstadoPago;
-import Usuarios.Usuario;
 
 import java.time.LocalDate;
 
@@ -9,14 +8,16 @@ public class Pago {
 
     private static int ID_PAGO = 0;
 
-    private int id;
-    private double importe;
+    private final int id;
+    private double importeBase;
+    private double penalizacionAplicada;
+    private double importeFinal;
     private LocalDate fechaPago;
     private EstadoPago estadoPago;
 
-    public Pago(double importe) {
+    public Pago(double importeBase) {
         this.id = ++ID_PAGO;
-        this.importe = importe;
+        this.importeBase = importeBase;
         this.estadoPago = EstadoPago.PENDIENTE;
     }
 
@@ -24,12 +25,12 @@ public class Pago {
         return id;
     }
 
-    public double getImporte() {
-        return importe;
+    public double getImporteBase() {
+        return importeBase;
     }
 
-    public void setImporte(double importe) {
-        this.importe = importe;
+    public void setImporteBase(double importeBase) {
+        this.importeBase = importeBase;
     }
 
     public LocalDate getFechaPago() {
@@ -44,7 +45,16 @@ public class Pago {
         this.estadoPago = estadoPago;
     }
 
-    public void confirmarPago() {
-        this.fechaPago = LocalDate.now();
+    public void setPenalizacionAplicada(double penalizacionAplicada) {
+        this.penalizacionAplicada = penalizacionAplicada;
+    }
+
+    public void setImporteFinal() {
+        this.importeFinal = importeBase+penalizacionAplicada;
+    }
+
+    public double calcularPenalizacion() {
+
+        return 0;
     }
 }

@@ -5,6 +5,8 @@ import Ficheros.GestorFicheros;
 import Pagos.Pago;
 import Usuarios.ParticipanteEvento;
 import Usuarios.Usuario;
+
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -14,10 +16,15 @@ public class GestorMorosos {
     private ArrayList<Evento> eventos;
     private GestorFicheros gestorFicheros;
 
+    //para pruebas de penalización
+    private LocalDate fechaModificada;
+    //---------------------------
+
     public GestorMorosos() {
         this.usuarios = new ArrayList<>();
         this.eventos = new ArrayList<>();
         this.gestorFicheros = new GestorFicheros();
+        this.fechaModificada = LocalDate.now();
     }
 
     public List<Evento> getEventos() {
@@ -31,6 +38,19 @@ public class GestorMorosos {
     public void aniadirEvento(Evento evento) {
         eventos.add(evento);
     }
+
+    //region MODIFICAR FECHA
+    public void sumarDias() {
+        int dias = Integer.parseInt(IO.readln("Introduce la cantidad de dias que quieres " +
+                "aumentar la fecha: "));
+
+        this.fechaModificada = fechaModificada.plusDays(dias);
+    }
+
+    public void mostrarFecha() {
+        System.out.println(fechaModificada);
+    }
+    //enregion
 
     public Usuario buscarUsuarioID(int id) {
         for (Usuario u : usuarios) {

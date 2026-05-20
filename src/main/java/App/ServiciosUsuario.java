@@ -102,7 +102,7 @@ public class ServiciosUsuario {
                 if (p.getUsuario() == usuario) {
                     hayEventos = true;
                     System.out.printf("[ID: %d] %S - %.2f€ %S%n%n", e.getId(), e.getNombre(),
-                            p.getPago().getImporte(), p.getPago().getEstadoPago());
+                            p.getPago().getImporteBase(), p.getPago().getEstadoPago());
                 }
             }
         }
@@ -135,7 +135,7 @@ public class ServiciosUsuario {
                     hayPendientes = true;
                     System.out.printf("[ID PAGO: %d] %S - %S %.2f€%n%n", p.getPago().getId(),
                             e.getNombre(),
-                            p.getPago().getEstadoPago(), p.getPago().getImporte());
+                            p.getPago().getEstadoPago(), p.getPago().getImporteBase());
                 }
             }
         }
@@ -154,7 +154,6 @@ public class ServiciosUsuario {
             pago = gestorMorosos.buscarPago(id);
 
             pago.setEstadoPago(EstadoPago.PENDIENTE_CONFIRMAR);
-            System.out.println(pago.getEstadoPago());
 
         } else {
             System.out.println("No hay pagos pendientes\n");
@@ -179,7 +178,7 @@ public class ServiciosUsuario {
         for (ParticipanteEvento p : evento.getListParticipantes()) {
             if (p.getPago().getEstadoPago() == EstadoPago.PENDIENTE_CONFIRMAR) {
                 System.out.printf("[ID: %d] %S %.2f€%n", p.getPago().getId(),
-                        p.getUsuario().getNombre(), p.getPago().getImporte());
+                        p.getUsuario().getNombre(), p.getPago().getImporteBase());
                 hayPagos = true;
             }
         }
@@ -194,7 +193,9 @@ public class ServiciosUsuario {
             opcion = Integer.parseInt(IO.readln("Selecciona una opcion: "));
 
             switch (opcion) {
-                case 1 -> pago.setEstadoPago(EstadoPago.PAGADO);
+                case 1 -> {
+
+                }
                 case 2 -> pago.setEstadoPago(EstadoPago.RECHAZADO);
                 case 3 -> pago.setEstadoPago(EstadoPago.PENDIENTE_CONFIRMAR);
                 default -> System.out.printf("Opción no valida%n");
