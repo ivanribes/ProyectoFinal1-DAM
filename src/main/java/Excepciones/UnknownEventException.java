@@ -1,7 +1,7 @@
 package Excepciones;
 
 public class UnknownEventException extends RuntimeException {
-    public UnknownEventException(String message) {
-        super(message);
+    public UnknownEventException() {
+        super("No se ha encontrado el evento🗓️⚠️");
     }
 }

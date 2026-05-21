@@ -1,5 +1,6 @@
 package App;
 
+import Excepciones.UnknownUserException;
 import Menu.Menu;
 import Usuarios.Usuario;
 
@@ -35,9 +36,14 @@ public class Aplicacion {
 
                 switch (opcion) {
                     case 1-> {
-                        this.usuarioActual = serviciosUsuario.seleccionarUsuario();
-                        serviciosUsuario.setUsuario(usuarioActual);
-                        System.out.println("Sesion iniciado como " + usuarioActual.getNombre() + "✅\n");
+                        try {
+
+                            this.usuarioActual = serviciosUsuario.seleccionarUsuario();
+                            serviciosUsuario.setUsuario(usuarioActual);
+                            System.out.println("Sesión iniciado como " + usuarioActual.getNombre() + "✅\n");
+                        } catch (UnknownUserException e) {
+                            System.out.println(e.getMessage());
+                        }
                     }
                     case 2-> System.out.println("registrar");
                     case 3->{

@@ -2,7 +2,6 @@ package Rankings;
 
 import App.GestorMorosos;
 import Eventos.Evento;
-import Usuarios.ParticipanteEvento;
 import Usuarios.Usuario;
 
 import java.util.ArrayList;

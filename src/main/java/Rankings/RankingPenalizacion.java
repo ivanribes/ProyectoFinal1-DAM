@@ -62,7 +62,7 @@ public class RankingPenalizacion extends Ranking {
             }
 
             System.out.printf(
-                    "%s TOP %d -> Usuario: %S | Penalización total pagada: %.2f %n",
+                    "%s TOP %d -> Usuario: %S | Penalización total pagada: %.2f€ %n",
                     medalla,
                     i + 1,
                     usuario.getNombre(),

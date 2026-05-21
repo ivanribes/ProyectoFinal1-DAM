@@ -2,6 +2,9 @@ package App;
 
 import Enums.EstadoPago;
 import Eventos.Evento;
+import Excepciones.UnknownEventException;
+import Excepciones.UnknownPaymentException;
+import Excepciones.UnknownUserException;
 import Ficheros.GestorFicheros;
 import Pagos.Pago;
 import Rankings.Ranking;
@@ -70,40 +73,48 @@ public class GestorMorosos {
     }
     //endregion
 
-    public Usuario buscarUsuarioID(int id) {
+    public ArrayList<Usuario> mostrarUsuarios(Usuario usuarioActual) {
+
+        for (Usuario u: usuarios) {
+            if (u != usuarioActual) {
+                System.out.println("User_ID: " + u.getId() + " --> " + u.getEmail());
+            }
+        }
+
+        return usuarios;
+    }
+
+    public Usuario buscarUsuarioID(int id) throws UnknownUserException {
         for (Usuario u : usuarios) {
             if (id == u.getId())  {
                 return u;
             }
         }
 
-        System.out.println("No se ha encontrado el usuario");
-        return null;
+        throw new UnknownUserException();
     }
 
-    public Evento buscarEvento(int id) {
+    public Evento buscarEvento(int id) throws UnknownEventException {
         for (Evento e : eventos) {
             if (id == e.getId())  {
                 return e;
             }
         }
 
-        System.out.println("No se ha encontrado el evento");
-        return null;
+        throw new UnknownEventException();
     }
 
-    public Pago buscarPago(Evento evento, int idPago) {
+    public Pago buscarPago(Evento evento, int idPago) throws UnknownPaymentException{
         for (ParticipanteEvento p : evento.getListParticipantes()) {
             if (p.getPago().getId() == idPago) {
                 return p.getPago();
             }
         }
 
-        System.out.println("No se ha encontrado el pago");
-        return null;
+        throw new UnknownPaymentException();
     }
 
-    public Pago buscarPago(int idPago) {
+    public Pago buscarPago(int idPago) throws UnknownPaymentException {
         for (Evento e: eventos) {
             for (ParticipanteEvento p : e.getListParticipantes()) {
                 if (p.getPago().getId() == idPago) {
@@ -112,14 +123,7 @@ public class GestorMorosos {
             }
         }
 
-        System.out.println("No se ha encontrado el pago");
-        return null;
-    }
-
-    public void mostrarUsuarios() {
-        for (Usuario u: usuarios) {
-            System.out.println("User_ID: " + u.getId() + " --> " + u.getEmail());
-        }
+        throw new UnknownPaymentException();
     }
 
     public void actualizarPenalizaciones() {

@@ -1,7 +1,7 @@
 package Excepciones;
 
 public class UnknownUserException extends RuntimeException {
-    public UnknownUserException(String message) {
-        super(message);
+    public UnknownUserException() {
+        super("No se ha encontrado el usuario👤⚠️");
     }
 }

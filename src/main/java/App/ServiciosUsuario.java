@@ -2,14 +2,17 @@ package App;
 
 import Enums.EstadoPago;
 import Eventos.Evento;
+import Excepciones.UnknownEventException;
+import Excepciones.UnknownUserException;
 import Menu.Menu;
 import Pagos.Pago;
-import Rankings.Ranking;
 import Rankings.RankingEventosCreados;
 import Rankings.RankingMoroso;
 import Rankings.RankingPenalizacion;
 import Usuarios.ParticipanteEvento;
 import Usuarios.Usuario;
+
+import java.util.ArrayList;
 
 public class ServiciosUsuario {
     private Usuario usuario;
@@ -23,8 +26,8 @@ public class ServiciosUsuario {
         this.usuario = usuario;
     }
 
-    public Usuario seleccionarUsuario() {
-        gestorMorosos.mostrarUsuarios();
+    public Usuario seleccionarUsuario() throws UnknownUserException {
+        ArrayList<Usuario> usuarios = gestorMorosos.mostrarUsuarios(usuario);
 
         int id = Integer.parseInt(IO.readln("Introduce el ID del usuario: "));
 
@@ -48,31 +51,31 @@ public class ServiciosUsuario {
 
     //region AÑADIR PARTICIPANTES
     public void anadirParticipantes() {
-        Evento evento;
-        if (consultarEventosCreados()) {
-            int idEvento = Integer.parseInt(IO.readln("Introduce el id del evento: "));
+        Evento evento = null;
+        try {
+            if (consultarEventosCreados()) {
+                int idEvento;
 
-            evento = gestorMorosos.buscarEvento(idEvento);
+                idEvento = Integer.parseInt(IO.readln("Introduce el id del evento: "));
+                evento = gestorMorosos.buscarEvento(idEvento);
 
-            if (evento != null) {
-                Usuario usuarioAniadir;
-                gestorMorosos.mostrarUsuarios();
+                if (evento != null) {
+                    Usuario usuarioAniadir;
+                        do {
+                            usuarioAniadir = seleccionarUsuario();
+                            evento.aniadirParticipantes(
+                                    new ParticipanteEvento(usuarioAniadir, evento,
+                                            evento.getImporteTotal() / evento.getParticipantes()));
+                            System.out.printf("%S se ha añadido a %S👤✅%n%n",
+                                    usuarioAniadir.getNombre(),
+                                    evento.getNombre());
 
-                do {
-                    usuarioAniadir = seleccionarUsuario();
-
-                    evento.aniadirParticipantes(new ParticipanteEvento(usuarioAniadir, evento,
-                            evento.getImporteTotal() / evento.getParticipantes()));
-                    System.out.printf("%S se ha añadido a %S👤✅%n%n", usuarioAniadir.getNombre(),
-                            evento.getNombre());
-
-                } while (IO.readln("Desea introducir mas participantes? (si-no): ")
-                        .equalsIgnoreCase("si"));
-            } else {
-                System.out.println("No se ha encontrado el evento⚠️\n");
+                        } while (IO.readln("Desea introducir mas participantes? (si-no): ")
+                                .equalsIgnoreCase("si"));
+                }
             }
-        } else {
-            System.out.println("No hay eventos creados.\n");
+        } catch (UnknownEventException | UnknownUserException e) {
+            System.out.println(e.getMessage());
         }
     }
     //endregion
@@ -262,7 +265,6 @@ public class ServiciosUsuario {
         }
 
         if (hayPagos) {
-
             id = Integer.parseInt(IO.readln("Introduce el ID del pago: "));
 
             pago = gestorMorosos.buscarPago(evento, id);
