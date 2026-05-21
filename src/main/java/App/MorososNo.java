@@ -8,8 +8,7 @@ public class MorososNo {
 
         GestorMorosos gestor = new GestorMorosos();
 
-        //TODO conectar rankings con servicio de usuario
-        Aplicacion app = new Aplicacion(gestor, new ServiciosUsuario(gestor, ranking));
+        Aplicacion app = new Aplicacion(gestor, new ServiciosUsuario(gestor));
         app.iniciar();
 
         //DATOS PRUEBA

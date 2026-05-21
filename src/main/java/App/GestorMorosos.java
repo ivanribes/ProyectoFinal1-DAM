@@ -1,11 +1,12 @@
 package App;
 
+import Enums.EstadoPago;
 import Eventos.Evento;
 import Ficheros.GestorFicheros;
 import Pagos.Pago;
+import Rankings.Ranking;
 import Usuarios.ParticipanteEvento;
 import Usuarios.Usuario;
-
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -14,6 +15,7 @@ import java.util.List;
 public class GestorMorosos {
     private ArrayList<Usuario> usuarios;
     private ArrayList<Evento> eventos;
+    private Ranking ranking;
     private GestorFicheros gestorFicheros;
 
     //para pruebas de penalización
@@ -39,6 +41,14 @@ public class GestorMorosos {
         return Collections.unmodifiableList(eventos);
     }
 
+    public void setRanking(Ranking tipoRanking) {
+        this.ranking = tipoRanking;
+    }
+
+    public Ranking getRanking() {
+        return ranking;
+    }
+
     public void aniadirUsuario(Usuario user) {
         usuarios.add(user);
     }
@@ -58,7 +68,7 @@ public class GestorMorosos {
     public void mostrarFecha() {
         System.out.println(fechaModificada);
     }
-    //enregion
+    //endregion
 
     public Usuario buscarUsuarioID(int id) {
         for (Usuario u : usuarios) {
@@ -115,8 +125,11 @@ public class GestorMorosos {
     public void actualizarPenalizaciones() {
         for (Evento e : eventos) {
             for (ParticipanteEvento p : e.getListParticipantes()) {
-               p.getPago().setPenalizacionAplicada(p.getPago()
-                       .calcularPenalizacion(e.getFechaPagoLimite(), fechaModificada));
+                if (p.getPago().getEstadoPago() == EstadoPago.PENDIENTE ||
+                        p.getPago().getEstadoPago() == EstadoPago.RECHAZADO) {
+                    p.getPago().setPenalizacionAplicada(p.getPago()
+                            .calcularPenalizacion(e.getFechaPagoLimite(), fechaModificada));
+                }
             }
         }
     }

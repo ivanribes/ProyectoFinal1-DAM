@@ -20,8 +20,9 @@ public class RankingMoroso extends Ranking{
     }
     //Mas dias tarda en pagar
 
-    @Override
-    public void generarRanking() {
+    @Override protected void generarRanking() {
+
+        rankingTiempoPago.clear();
 
         for (Usuario u : gestorMorosos.getUsuarios()) {
             int numPagos = 0;
@@ -35,7 +36,10 @@ public class RankingMoroso extends Ranking{
                     }
                 }
             }
-            rankingTiempoPago.put(u.getId(), mediaTiempo(dias, numPagos));
+
+            if (numPagos > 0) {
+                rankingTiempoPago.put(u.getId(), mediaTiempo(dias, numPagos));
+            }
         }
     }
 
@@ -44,6 +48,8 @@ public class RankingMoroso extends Ranking{
     }
 
     @Override public void mostrarRanking() {
+
+        generarRanking();
 
         List<Map.Entry<Integer, Double>> lista = new ArrayList<>(rankingTiempoPago.entrySet());
 

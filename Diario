@@ -18,6 +18,17 @@ Implementar penalizaciones, he añadido las opciones de modificar fecha actual y
 menu general para asi poder hacer pruebas con las penalizaciones.
 Comenzar rankings, clase abstracta con polimorfismo
 
+· 21-5-26
+Terminar ranking morosos, implementar los otros 2 rankings, trabajar con hasmap es nuevo y algo
+lioso a la hora de tener que pasarlo a lista para poder ordenarlos, pero bien, con ayuda de chati se
+va entendiendo.
+Las listas las declaro como List, recomienda hacerlo asi y no con Arraylist para en caso de querer
+modificar el tipo de lista no tener que cambiar tanto el codigo y poder aprovechar mas el
+polimorfismo que no aporta
+usar la interfaz List.
+
+
+
 //OTROS
 Limitar la posibilidad de añadirse a uno mismo a su evento y de añadir a usuarios que ta estan en
 ese evento.

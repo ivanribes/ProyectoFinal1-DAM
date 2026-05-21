@@ -5,17 +5,18 @@ import Eventos.Evento;
 import Menu.Menu;
 import Pagos.Pago;
 import Rankings.Ranking;
+import Rankings.RankingEventosCreados;
+import Rankings.RankingMoroso;
+import Rankings.RankingPenalizacion;
 import Usuarios.ParticipanteEvento;
 import Usuarios.Usuario;
 
 public class ServiciosUsuario {
     private Usuario usuario;
     private final GestorMorosos gestorMorosos;
-    private Ranking ranking;
 
-    public ServiciosUsuario(GestorMorosos gestor, Ranking ranking) {
+    public ServiciosUsuario(GestorMorosos gestor) {
         this.gestorMorosos = gestor;
-        this.ranking = ranking;
     }
 
     public void setUsuario(Usuario usuario) {
@@ -164,7 +165,8 @@ public class ServiciosUsuario {
         for (Evento e : gestorMorosos.getEventos()) {
             for (ParticipanteEvento p : e.getListParticipantes()) {
                 if ((p.getUsuario() == usuario) &&
-                        (p.getPago().getEstadoPago() == EstadoPago.PENDIENTE)) {
+                        ((p.getPago().getEstadoPago() == EstadoPago.PENDIENTE) ||
+                                p.getPago().getEstadoPago() == EstadoPago.RECHAZADO)) {
                     hayPendientes = true;
                     System.out.printf("""
                                     [ID PAGO: %d]
@@ -189,10 +191,6 @@ public class ServiciosUsuario {
             }
         }
 
-        if (!hayPendientes) {
-            System.out.println("No hay pagos pendientes.");
-        }
-
         return hayPendientes;
     }
     //endregion
@@ -206,9 +204,12 @@ public class ServiciosUsuario {
             id = Integer.parseInt(IO.readln("Introduce el ID del pago a confirmar: "));
 
             pago = gestorMorosos.buscarPago(id);
-
-            pago.setEstadoPago(EstadoPago.PENDIENTE_CONFIRMAR);
-            pago.setFechaPago(gestorMorosos.getFechaModificada());
+            if (pago != null) {
+                pago.setEstadoPago(EstadoPago.PENDIENTE_CONFIRMAR);
+                pago.setFechaPago(gestorMorosos.getFechaModificada());
+            } else {
+                System.out.println("No se ha encontrado el pago.");
+            }
 
         } else {
             System.out.println("No hay pagos pendientes\n");
@@ -288,11 +289,20 @@ public class ServiciosUsuario {
         int opcion = Integer.parseInt(IO.readln("Selecciona una opcion: "));
 
         switch (opcion) {
-            case 1->
-                case 2->
-                    case 3->
-                        case 4-> System.out.println();
-                            default ->
+            case 1 -> {
+                gestorMorosos.setRanking(new RankingMoroso(gestorMorosos));
+                gestorMorosos.getRanking().mostrarRanking();
+            }
+            case 2 -> {
+                gestorMorosos.setRanking(new RankingEventosCreados(gestorMorosos));
+                gestorMorosos.getRanking().mostrarRanking();
+            }
+            case 3 -> {
+                gestorMorosos.setRanking(new RankingPenalizacion(gestorMorosos));
+                gestorMorosos.getRanking().mostrarRanking();
+            }
+            case 4 -> System.out.println();
+            default -> System.out.println("Opcion no valida.");
         }
     }
     //endregion

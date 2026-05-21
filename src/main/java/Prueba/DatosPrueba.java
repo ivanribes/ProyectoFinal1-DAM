@@ -79,7 +79,6 @@ public class DatosPrueba {
         p8.getPago().setEstadoPago(EstadoPago.PENDIENTE);
 
         RankingMoroso ranking = new RankingMoroso(gestor);
-        ranking.generarRanking();
         ranking.mostrarRanking();
     }
 }
