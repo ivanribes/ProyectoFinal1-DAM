@@ -4,6 +4,7 @@ import Enums.EstadoPago;
 import Eventos.Evento;
 import Excepciones.UnknownEventException;
 import Excepciones.UnknownUserException;
+import Ficheros.GestorFicheros;
 import Menu.Menu;
 import Pagos.Pago;
 import Rankings.RankingEventosCreados;
@@ -12,6 +13,7 @@ import Rankings.RankingPenalizacion;
 import Usuarios.ParticipanteEvento;
 import Usuarios.Usuario;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class ServiciosUsuario {
@@ -311,13 +313,24 @@ public class ServiciosUsuario {
 
     //region EXPORTAR MIS EVENTOS
 
-    public void exportarMisEventos() {
-        System.out.println("ficheros y tal");
+    public void exportarMisEventos(Usuario usuario) throws IOException {
+        GestorFicheros gestorFicheros = new GestorFicheros("Ficheros/");
+
+        for (Evento e : gestorMorosos.getEventos()) {
+            if (e.getCreador() == usuario) {
+                gestorFicheros.generarRegistroEvento(e, usuario);
+            }
+        }
     }
     //endregion
 
     //region DESACTIVAR USUARIO
     public void desactivarUsuario() {
+        //TODO falta excluir usuarios desactivados de la app
+        /*
+        que no aparezcan a la hora de poder añadirlos a nuevos eventos, pero si deben quedar
+        registros de los eventos en los que ya estan
+         */
         usuario.setActivo(false);
     }
     //endregion

@@ -2,7 +2,10 @@ package App;
 
 import Excepciones.UnknownUserException;
 import Menu.Menu;
+import Prueba.DatosPrueba;
 import Usuarios.Usuario;
+
+import java.io.IOException;
 
 public class Aplicacion {
     private Usuario usuarioActual;
@@ -21,6 +24,7 @@ public class Aplicacion {
 
     public void iniciar() {
         cargarUsuarios();
+        DatosPrueba.cargarDatosPrueba(gestorMorosos);
         ejecutarPrograma();
     }
 
@@ -37,7 +41,6 @@ public class Aplicacion {
                 switch (opcion) {
                     case 1-> {
                         try {
-
                             this.usuarioActual = serviciosUsuario.seleccionarUsuario();
                             serviciosUsuario.setUsuario(usuarioActual);
                             System.out.println("Sesión iniciado como " + usuarioActual.getNombre() + "✅\n");
@@ -72,7 +75,13 @@ public class Aplicacion {
                     case 7 -> serviciosUsuario.saldarPagos();
                     case 8 -> serviciosUsuario.confirmarPagos();
                     case 9 -> serviciosUsuario.verRankings();
-                    case 10 -> serviciosUsuario.exportarMisEventos();
+                    case 10 -> {
+                        try {
+                            serviciosUsuario.exportarMisEventos(usuarioActual);
+                        } catch (IOException e) {
+                            System.out.println("Error al exportar los eventos.");
+                        }
+                    }
                     case 11 -> serviciosUsuario.desactivarUsuario();
                     case 12 -> cerrarSesion();
                     default -> System.out.println("Opción no válida");
@@ -105,7 +114,7 @@ public class Aplicacion {
         gestorMorosos.aniadirUsuario(
                 new Usuario(10, "Elena Romero", "elena.romero@gmail.com"));
 
-        // En caso de implementar base de datos se eliminaria esta carga manual
+        // En caso de implementar base de datos se eliminaria esta carga "manual"
     }
 
     public Usuario getUsuarioActual() {
@@ -115,7 +124,6 @@ public class Aplicacion {
     public void seleccionarUsuario() {
         this.usuarioActual = serviciosUsuario.seleccionarUsuario();
     }
-
 
     public void cerrarSesion() {
         this.usuarioActual = null;

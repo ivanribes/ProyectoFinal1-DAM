@@ -28,7 +28,6 @@ public class GestorMorosos {
     public GestorMorosos() {
         this.usuarios = new ArrayList<>();
         this.eventos = new ArrayList<>();
-        this.gestorFicheros = new GestorFicheros();
         this.fechaModificada = LocalDate.now();
     }
 

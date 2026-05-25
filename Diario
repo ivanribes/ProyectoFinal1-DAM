@@ -26,9 +26,20 @@ Las listas las declaro como List, recomienda hacerlo asi y no con Arraylist para
 modificar el tipo de lista no tener que cambiar tanto el codigo y poder aprovechar mas el
 polimorfismo que no aporta
 usar la interfaz List.
+Añadir excepciones y reforzar reglas de negocio como limitar el hecho de poder añadirse a uno mismo
+como participante a un evento propio.
+
+· 25-5-26
+Implementar la exportación de ficheros, quiza podria generar un fichero con usuarios, eventos y
+demas, y que los datos se carguen en el programa desde ahi en caso de tener que implementar lectura
+de ficheros en el programa.
 
 
 
 //OTROS
-Limitar la posibilidad de añadirse a uno mismo a su evento y de añadir a usuarios que ta estan en
-ese evento.
+Limitar la posibilidad añadir usuarios que ya estan en ese evento.
+Gestionar usuarios desactivados
+no permitir confirmar pagos ajenos
+evitar  exportar si no hay eventos creados
+
+! mostrar mensaje si no hay rankings

@@ -10,75 +10,122 @@ import Usuarios.Usuario;
 
 public class DatosPrueba {
 
-    public static void cargarDatosRanking(GestorMorosos gestor) {
+    public static void cargarDatosPrueba(GestorMorosos gestor) {
 
-        Usuario carlos = new Usuario(1, "Carlos Martinez", "carlos@gmail.com");
-        Usuario laura = new Usuario(2, "Laura Gomez", "laura@gmail.com");
-        Usuario david = new Usuario(3, "David Fernandez", "david@gmail.com");
-        Usuario marta = new Usuario(4, "Marta Lopez", "marta@gmail.com");
+        Usuario carlos = gestor.buscarUsuarioID(1);
+        Usuario laura = gestor.buscarUsuarioID(2);
+        Usuario david = gestor.buscarUsuarioID(3);
+        Usuario marta = gestor.buscarUsuarioID(4);
+        Usuario sergio = gestor.buscarUsuarioID(5);
+        Usuario andrea = gestor.buscarUsuarioID(6);
 
-        gestor.aniadirUsuario(carlos);
-        gestor.aniadirUsuario(laura);
-        gestor.aniadirUsuario(david);
-        gestor.aniadirUsuario(marta);
+        // EVENTO 1
+        Evento cena = new Evento("Cena clase DAM", 180, carlos);
 
-        Evento cena = new Evento("Cena clase", 120, carlos);
-        Evento regalo = new Evento("Regalo cumpleaños", 200, laura);
-        Evento viaje = new Evento("Viaje fin de semana", 300, david);
+        ParticipanteEvento p1 =
+                new ParticipanteEvento(laura, cena, 60);
 
-        gestor.aniadirEvento(cena);
-        gestor.aniadirEvento(regalo);
-        gestor.aniadirEvento(viaje);
+        ParticipanteEvento p2 =
+                new ParticipanteEvento(david, cena, 60);
 
-        ParticipanteEvento p1 = new ParticipanteEvento(laura, cena, 40);
-        ParticipanteEvento p2 = new ParticipanteEvento(david, cena, 40);
-        ParticipanteEvento p3 = new ParticipanteEvento(marta, cena, 40);
+        ParticipanteEvento p3 =
+                new ParticipanteEvento(marta, cena, 60);
 
         cena.aniadirParticipantes(p1);
         cena.aniadirParticipantes(p2);
         cena.aniadirParticipantes(p3);
 
-        ParticipanteEvento p4 = new ParticipanteEvento(carlos, regalo, 100);
-        ParticipanteEvento p5 = new ParticipanteEvento(david, regalo, 100);
+        gestor.aniadirEvento(cena);
 
-        regalo.aniadirParticipantes(p4);
-        regalo.aniadirParticipantes(p5);
+        // EVENTO 2
+        Evento viaje = new Evento("Viaje Peñiscola", 450, laura);
 
-        ParticipanteEvento p6 = new ParticipanteEvento(carlos, viaje, 100);
-        ParticipanteEvento p7 = new ParticipanteEvento(laura, viaje, 100);
-        ParticipanteEvento p8 = new ParticipanteEvento(marta, viaje, 100);
+        ParticipanteEvento p4 =
+                new ParticipanteEvento(carlos, viaje, 112.5);
 
+        ParticipanteEvento p5 =
+                new ParticipanteEvento(andrea, viaje, 112.5);
+
+        ParticipanteEvento p6 =
+                new ParticipanteEvento(sergio, viaje, 112.5);
+
+        viaje.aniadirParticipantes(p4);
+        viaje.aniadirParticipantes(p5);
         viaje.aniadirParticipantes(p6);
-        viaje.aniadirParticipantes(p7);
-        viaje.aniadirParticipantes(p8);
 
-        // Laura paga tarde: 5 días
+        gestor.aniadirEvento(viaje);
+
+        // EVENTO 3
+        Evento regalo = new Evento("Regalo cumpleaños", 120, marta);
+
+        ParticipanteEvento p7 =
+                new ParticipanteEvento(carlos, regalo, 40);
+
+        ParticipanteEvento p8 =
+                new ParticipanteEvento(laura, regalo, 40);
+
+        regalo.aniadirParticipantes(p7);
+        regalo.aniadirParticipantes(p8);
+
+        gestor.aniadirEvento(regalo);
+
+        // =========================
+        // PAGOS
+        // =========================
+
+        // Laura paga tarde
         p1.getPago().setEstadoPago(EstadoPago.PAGADO);
-        p1.getPago().setFechaPago(cena.getFechaCreacion().plusDays(5));
+        p1.getPago().setFechaPago(
+                cena.getFechaCreacion().plusDays(6));
 
-        // David paga muy tarde: 10 días
+        p1.getPago().setPenalizacionAplicada(
+                p1.getPago().calcularPenalizacion(
+                        cena.getFechaPagoLimite(),
+                        p1.getPago().getFechaPago()));
+
+        // David paga MUY tarde
         p2.getPago().setEstadoPago(EstadoPago.PAGADO);
-        p2.getPago().setFechaPago(cena.getFechaCreacion().plusDays(10));
+        p2.getPago().setFechaPago(
+                cena.getFechaCreacion().plusDays(12));
 
-        // Marta paga pronto: 1 día
-        p3.getPago().setEstadoPago(EstadoPago.PAGADO);
-        p3.getPago().setFechaPago(cena.getFechaCreacion().plusDays(1));
+        p2.getPago().setPenalizacionAplicada(
+                p2.getPago().calcularPenalizacion(
+                        cena.getFechaPagoLimite(),
+                        p2.getPago().getFechaPago()));
 
-        // Carlos paga en dos eventos: media 4 días
+        // Marta sigue pendiente
+        p3.getPago().setEstadoPago(EstadoPago.PENDIENTE);
+
+        // Carlos paga normal
         p4.getPago().setEstadoPago(EstadoPago.PAGADO);
-        p4.getPago().setFechaPago(regalo.getFechaCreacion().plusDays(3));
+        p4.getPago().setFechaPago(
+                viaje.getFechaCreacion().plusDays(2));
 
-        p6.getPago().setEstadoPago(EstadoPago.PAGADO);
-        p6.getPago().setFechaPago(viaje.getFechaCreacion().plusDays(5));
+        // Andrea rechazada
+        p5.getPago().setEstadoPago(EstadoPago.RECHAZADO);
 
-        // Laura vuelve a pagar tarde: media Laura = (5 + 8) / 2 = 6.5
+        // Sergio pendiente confirmar
+        p6.getPago().setEstadoPago(
+                EstadoPago.PENDIENTE_CONFIRMAR);
+
+        p6.getPago().setFechaPago(
+                viaje.getFechaCreacion().plusDays(5));
+
+        // Carlos vuelve a pagar tarde
         p7.getPago().setEstadoPago(EstadoPago.PAGADO);
-        p7.getPago().setFechaPago(viaje.getFechaCreacion().plusDays(8));
 
-        // Marta queda pendiente en otro evento, no cuenta para el ranking
-        p8.getPago().setEstadoPago(EstadoPago.PENDIENTE);
+        p7.getPago().setFechaPago(
+                regalo.getFechaCreacion().plusDays(7));
 
-        RankingMoroso ranking = new RankingMoroso(gestor);
-        ranking.mostrarRanking();
+        p7.getPago().setPenalizacionAplicada(
+                p7.getPago().calcularPenalizacion(
+                        regalo.getFechaPagoLimite(),
+                        p7.getPago().getFechaPago()));
+
+        // Laura paga rápido
+        p8.getPago().setEstadoPago(EstadoPago.PAGADO);
+
+        p8.getPago().setFechaPago(
+                regalo.getFechaCreacion().plusDays(1));
     }
 }

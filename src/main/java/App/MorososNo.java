@@ -1,6 +1,9 @@
 package App;
 
-import Prueba.DatosPrueba;
+import Enums.EstadoPago;
+import Eventos.Evento;
+import Usuarios.ParticipanteEvento;
+import Usuarios.Usuario;
 
 public class MorososNo {
     public static void main(String[] args) {
@@ -11,7 +14,5 @@ public class MorososNo {
         Aplicacion app = new Aplicacion(gestor, new ServiciosUsuario(gestor));
         app.iniciar();
 
-        //DATOS PRUEBA
-//        DatosPrueba.cargarDatosRanking(gestor);
     }
 }

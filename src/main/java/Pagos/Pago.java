@@ -34,6 +34,7 @@ public class Pago implements Penalizable {
 
     public void setImporteBase(double importeBase) {
         this.importeBase = importeBase;
+        setImporteFinal();
     }
 
     public LocalDate getFechaPago() {
@@ -68,7 +69,6 @@ public class Pago implements Penalizable {
     public void setImporteFinal() {
         this.importeFinal = importeBase + penalizacionAplicada;
     }
-
 
     @Override
     public double calcularPenalizacion(LocalDate fechaLimite, LocalDate fechaActual) {
