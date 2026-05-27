@@ -12,9 +12,7 @@ import Rankings.RankingMoroso;
 import Rankings.RankingPenalizacion;
 import Usuarios.ParticipanteEvento;
 import Usuarios.Usuario;
-
 import java.io.IOException;
-import java.util.ArrayList;
 
 public class ServiciosUsuario {
     private Usuario usuario;
@@ -29,7 +27,7 @@ public class ServiciosUsuario {
     }
 
     public Usuario seleccionarUsuario() throws UnknownUserException {
-        ArrayList<Usuario> usuarios = gestorMorosos.mostrarUsuarios(usuario);
+        gestorMorosos.mostrarUsuarios(usuario);
 
         int id = Integer.parseInt(IO.readln("Introduce el ID del usuario: "));
 
@@ -66,8 +64,7 @@ public class ServiciosUsuario {
                         do {
                             usuarioAniadir = seleccionarUsuario();
                             evento.aniadirParticipantes(
-                                    new ParticipanteEvento(usuarioAniadir, evento,
-                                            evento.getImporteTotal() / evento.getParticipantes()));
+                                    new ParticipanteEvento(usuarioAniadir, evento));
                             System.out.printf("%S se ha añadido a %S👤✅%n%n",
                                     usuarioAniadir.getNombre(),
                                     evento.getNombre());
@@ -195,6 +192,9 @@ public class ServiciosUsuario {
                 }
             }
         }
+         if (!hayPendientes) {
+            System.out.println("No hay pagos pendientes\n");
+        }
 
         return hayPendientes;
     }
@@ -216,8 +216,6 @@ public class ServiciosUsuario {
                 System.out.println("No se ha encontrado el pago.");
             }
 
-        } else {
-            System.out.println("No hay pagos pendientes\n");
         }
     }
     //endregion
@@ -238,7 +236,7 @@ public class ServiciosUsuario {
         System.out.println("PAGOS PENDIENTES DE CONFIRMAR:");
         for (ParticipanteEvento p : evento.getListParticipantes()) {
             if (p.getPago().getEstadoPago() == EstadoPago.PENDIENTE_CONFIRMAR) {
-                //region CONFIRMAR PAGOS
+
 
                 System.out.printf("""
                                 [ID PAGO: %d]
@@ -314,7 +312,7 @@ public class ServiciosUsuario {
     //region EXPORTAR MIS EVENTOS
 
     public void exportarMisEventos(Usuario usuario) throws IOException {
-        GestorFicheros gestorFicheros = new GestorFicheros("Ficheros/");
+        GestorFicheros gestorFicheros = new GestorFicheros("Ficheros/", gestorMorosos);
 
         for (Evento e : gestorMorosos.getEventos()) {
             if (e.getCreador() == usuario) {

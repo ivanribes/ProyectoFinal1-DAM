@@ -1,13 +1,16 @@
 package Usuarios;
 
 public class Usuario {
+
+    private static int idActual;
+
     private final int id;
     private String nombre;
     private String email;
     private boolean activo;
 
-    public Usuario(int id, String nombre, String email) {
-        this.id = id;
+    public Usuario(String nombre, String email) {
+        this.id = ++idActual;
         this.nombre = nombre;
         this.email = email;
         this.activo = true;

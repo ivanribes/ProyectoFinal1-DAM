@@ -4,12 +4,11 @@ import Excepciones.UnknownUserException;
 import Menu.Menu;
 import Prueba.DatosPrueba;
 import Usuarios.Usuario;
-
 import java.io.IOException;
 
 public class Aplicacion {
-    private Usuario usuarioActual;
     private final GestorMorosos gestorMorosos;
+    private Usuario usuarioActual;
     private ServiciosUsuario serviciosUsuario;
 
     public Aplicacion(GestorMorosos gestorMorosos, ServiciosUsuario serviciosUsuario) {
@@ -48,7 +47,7 @@ public class Aplicacion {
                             System.out.println(e.getMessage());
                         }
                     }
-                    case 2-> System.out.println("registrar");
+                    case 2-> System.out.println("Pedir los datos y crear un nuevo usuario");
                     case 3->{
                         gestorMorosos.sumarDias();
                         gestorMorosos.actualizarPenalizaciones();
@@ -94,25 +93,25 @@ public class Aplicacion {
         System.out.println("Cargando aplicacion...");
 
         gestorMorosos.aniadirUsuario(
-                new Usuario(1, "Carlos Martinez", "carlos.martinez@gmail.com"));
+                new Usuario("Carlos Martinez", "carlos.martinez@gmail.com"));
         gestorMorosos.aniadirUsuario(
-                new Usuario(2, "Laura Gomez", "laura.gomez@gmail.com"));
+                new Usuario( "Laura Gomez", "laura.gomez@gmail.com"));
         gestorMorosos.aniadirUsuario(
-                new Usuario(3, "David Fernandez", "david.fernandez@gmail.com"));
+                new Usuario( "David Fernandez", "david.fernandez@gmail.com"));
         gestorMorosos.aniadirUsuario(
-                new Usuario(4, "Marta Lopez", "marta.lopez@gmail.com"));
+                new Usuario( "Marta Lopez", "marta.lopez@gmail.com"));
         gestorMorosos.aniadirUsuario(
-                new Usuario(5, "Sergio Navarro", "sergio.navarro@gmail.com"));
+                new Usuario( "Sergio Navarro", "sergio.navarro@gmail.com"));
         gestorMorosos.aniadirUsuario(
-                new Usuario(6, "Andrea Ruiz", "andrea.ruiz@gmail.com"));
+                new Usuario( "Andrea Ruiz", "andrea.ruiz@gmail.com"));
         gestorMorosos.aniadirUsuario(
-                new Usuario(7, "Pablo Torres", "pablo.torres@gmail.com"));
+                new Usuario( "Pablo Torres", "pablo.torres@gmail.com"));
         gestorMorosos.aniadirUsuario(
-                new Usuario(8, "Lucia Moreno", "lucia.moreno@gmail.com"));
+                new Usuario( "Lucia Moreno", "lucia.moreno@gmail.com"));
         gestorMorosos.aniadirUsuario(
-                new Usuario(9, "Javier Castillo", "javier.castillo@gmail.com"));
+                new Usuario( "Javier Castillo", "javier.castillo@gmail.com"));
         gestorMorosos.aniadirUsuario(
-                new Usuario(10, "Elena Romero", "elena.romero@gmail.com"));
+                new Usuario( "Elena Romero", "elena.romero@gmail.com"));
 
         // En caso de implementar base de datos se eliminaria esta carga "manual"
     }

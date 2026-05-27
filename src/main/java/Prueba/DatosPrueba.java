@@ -4,13 +4,16 @@ package Prueba;
 import App.GestorMorosos;
 import Enums.EstadoPago;
 import Eventos.Evento;
-import Rankings.RankingMoroso;
+import Ficheros.GestorFicheros;
 import Usuarios.ParticipanteEvento;
 import Usuarios.Usuario;
+
 
 public class DatosPrueba {
 
     public static void cargarDatosPrueba(GestorMorosos gestor) {
+
+        GestorFicheros lector = new GestorFicheros("Datos/Datos.csv", gestor);
 
         Usuario carlos = gestor.buscarUsuarioID(1);
         Usuario laura = gestor.buscarUsuarioID(2);
@@ -23,13 +26,13 @@ public class DatosPrueba {
         Evento cena = new Evento("Cena clase DAM", 180, carlos);
 
         ParticipanteEvento p1 =
-                new ParticipanteEvento(laura, cena, 60);
+                new ParticipanteEvento(laura, cena);
 
         ParticipanteEvento p2 =
-                new ParticipanteEvento(david, cena, 60);
+                new ParticipanteEvento(david, cena);
 
         ParticipanteEvento p3 =
-                new ParticipanteEvento(marta, cena, 60);
+                new ParticipanteEvento(marta, cena);
 
         cena.aniadirParticipantes(p1);
         cena.aniadirParticipantes(p2);
@@ -41,13 +44,13 @@ public class DatosPrueba {
         Evento viaje = new Evento("Viaje Peñiscola", 450, laura);
 
         ParticipanteEvento p4 =
-                new ParticipanteEvento(carlos, viaje, 112.5);
+                new ParticipanteEvento(carlos, viaje);
 
         ParticipanteEvento p5 =
-                new ParticipanteEvento(andrea, viaje, 112.5);
+                new ParticipanteEvento(andrea, viaje);
 
         ParticipanteEvento p6 =
-                new ParticipanteEvento(sergio, viaje, 112.5);
+                new ParticipanteEvento(sergio, viaje);
 
         viaje.aniadirParticipantes(p4);
         viaje.aniadirParticipantes(p5);
@@ -59,10 +62,10 @@ public class DatosPrueba {
         Evento regalo = new Evento("Regalo cumpleaños", 120, marta);
 
         ParticipanteEvento p7 =
-                new ParticipanteEvento(carlos, regalo, 40);
+                new ParticipanteEvento(carlos, regalo);
 
         ParticipanteEvento p8 =
-                new ParticipanteEvento(laura, regalo, 40);
+                new ParticipanteEvento(laura, regalo);
 
         regalo.aniadirParticipantes(p7);
         regalo.aniadirParticipantes(p8);
@@ -127,5 +130,8 @@ public class DatosPrueba {
 
         p8.getPago().setFechaPago(
                 regalo.getFechaCreacion().plusDays(1));
+
+
+        lector.cargarFichero();
     }
 }

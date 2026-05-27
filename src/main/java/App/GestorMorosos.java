@@ -72,15 +72,13 @@ public class GestorMorosos {
     }
     //endregion
 
-    public ArrayList<Usuario> mostrarUsuarios(Usuario usuarioActual) {
+    public void mostrarUsuarios(Usuario usuarioActual) {
 
         for (Usuario u: usuarios) {
             if (u != usuarioActual) {
                 System.out.println("User_ID: " + u.getId() + " --> " + u.getEmail());
             }
         }
-
-        return usuarios;
     }
 
     public Usuario buscarUsuarioID(int id) throws UnknownUserException {

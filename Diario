@@ -4,6 +4,7 @@ Revision del diagrama de clases y creacion de clases con atributos y metodos bas
 Viendo el UML es posible que algunas de las clases trabajen de forma diferente a como esta diseñado
 el UML.
 He movido algunos atributos de las clases a otras donde tenia mas sentido por tema encapsulamiento.
+
 · 19-5-26
 Continuo escribiendo los atributos y metodos de las clases.
 Pido a la ia ayuda con los date, opinion sobre modificación de los atributos y metodos de las clases
@@ -12,6 +13,7 @@ Consulto a la ia sobre las mejores formas de mantener encapsulamiento, me recomi
 .unmodifiableList, y investigo sobre la diferencia entre list y arraylist.
 Implemento metodos de mostrar y confirmaciones de pago.
 Me he planteado incluir una clase abstracta en menu y rankings, y una interfaz penalizable en pago.
+
 · 20-5-26
 Termino confirmacion de pagos
 Implementar penalizaciones, he añadido las opciones de modificar fecha actual y mostar fecha en el
@@ -34,12 +36,22 @@ Implementar la exportación de ficheros, quiza podria generar un fichero con usu
 demas, y que los datos se carguen en el programa desde ahi en caso de tener que implementar lectura
 de ficheros en el programa.
 
+· 27-5-26
+Añadir funcion para añadir usuarios eventos y participantes mediante la lectura de un archivo .csv
+Controlar algunas excepciones mediante try-catch.
 
 
 //OTROS
 Limitar la posibilidad añadir usuarios que ya estan en ese evento.
 Gestionar usuarios desactivados
-no permitir confirmar pagos ajenos
-evitar  exportar si no hay eventos creados
+No permitir confirmar pagos ajenos
+Evitar exportar si no hay eventos creados
+mostrar mensaje si no hay rankings o eventos y demas
 
-! mostrar mensaje si no hay rankings
+//TODO la refactorización la tengo en chatgpt
+Refactorizar el metodo de mostrar ranking, repetido en los 3 y solo cambia el mensaje
+
+//A futuro
+BBDD
+Interfaz grafica
+

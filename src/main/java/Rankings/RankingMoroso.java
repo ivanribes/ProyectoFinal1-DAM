@@ -49,7 +49,10 @@ public class RankingMoroso extends Ranking{
 
     @Override public void mostrarRanking() {
 
+
         generarRanking();
+
+        //TODO esto en el super?? crear un String en un metodo y otro que solo lo muestre??
 
         List<Map.Entry<Integer, Double>> lista = new ArrayList<>(rankingTiempoPago.entrySet());
 
@@ -58,13 +61,10 @@ public class RankingMoroso extends Ranking{
 
         for (int i = 0; i < 3 && i < lista.size(); i++) {
 
-
             Map.Entry<Integer, Double> entry = lista.get(i);
-
             Usuario usuario = gestorMorosos.buscarUsuarioID(entry.getKey());
 
             String medalla = "";
-
             switch (i) {
                 case 0 -> medalla = "🥇";
                 case 1 -> medalla = "🥈";

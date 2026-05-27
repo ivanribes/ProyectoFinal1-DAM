@@ -3,7 +3,6 @@ package Rankings;
 import App.GestorMorosos;
 import Eventos.Evento;
 import Usuarios.Usuario;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -39,6 +38,7 @@ public class RankingEventosCreados extends Ranking{
     @Override public void mostrarRanking() {
         generarRanking();
 
+        //TODO esto en el super?? crear un String en un metodo y otro que solo lo muestre??
         List<Map.Entry<Integer, Integer>> lista = new ArrayList<>(rankingEventosCreados.entrySet());
 
         lista.sort((a,b) ->

@@ -5,18 +5,17 @@ import Pagos.Pago;
 
 public class ParticipanteEvento {
 
+    //TODO podria crear la id a partir del idevento + usuario o algo asi
     private static int ID_PARTICIPANTE = 0;
 
     private final Usuario usuario;
     private final Evento evento;
     private Pago pago;
 
-    public ParticipanteEvento(Usuario usuario, Evento evento,
-                              double importeDebe) {
+    public ParticipanteEvento(Usuario usuario, Evento evento) {
         this.ID_PARTICIPANTE = ++ID_PARTICIPANTE;
         this.usuario = usuario;
         this.evento = evento;
-        this.pago = new Pago(importeDebe);
     }
 
     public Usuario getUsuario() {
@@ -28,7 +27,7 @@ public class ParticipanteEvento {
     }
 
     public void setImporteDebe(double importeDebe) {
-        pago.setImporteBase(importeDebe);
+        this.pago = new Pago(importeDebe);
     }
 
     public Pago getPago() {

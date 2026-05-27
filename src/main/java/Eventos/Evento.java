@@ -9,7 +9,7 @@ import java.util.List;
 
 public class Evento {
 
-    private static int idActual = 0;
+    private static int idActual;
 
     private final int id;
     private String nombre;

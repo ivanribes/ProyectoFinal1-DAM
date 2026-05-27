@@ -1,0 +1,10 @@
+tipo;nombre;email;importe_total;creador_id;usuario_id;evento_id;fecha_pago
+;;;;;;;
+USUARIO;Ivan Ribes;ivanribes@gmail.com;;;;;
+EVENTO;Comida DAM;;200;11;;;
+;;;;;;;
+PARTICIPANTE;;;;;2;1;2026-05-31
+PARTICIPANTE;;;;;3;6;2026-05-29
+PARTICIPANTE;;;;;4;1;;
+PARTICIPANTE;;;;;5;1;;
+PARTICIPANTE;;;;;12;1;2026-05-30
