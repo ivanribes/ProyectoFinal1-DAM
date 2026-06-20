@@ -3,6 +3,7 @@ package Eventos;
 import Enums.EstadoPago;
 import Usuarios.ParticipanteEvento;
 import Usuarios.Usuario;
+
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -19,7 +20,7 @@ public class Evento {
     private final LocalDate fechaCreacion;
     private final LocalDate fechaPagoLimite;
     private final Usuario creador;
-    private ArrayList<ParticipanteEvento> participantes;
+    private final ArrayList<ParticipanteEvento> participantes;
 
     public Evento(String nombre, double importeTotal, Usuario creador) {
         this.id = ++idActual;
@@ -31,6 +32,7 @@ public class Evento {
         this.participantes = new ArrayList<>();
     }
 
+    //region GETTERS
     public int getId() {
         return id;
     }
@@ -60,20 +62,17 @@ public class Evento {
     }
 
     public int getParticipantes() {
-        return participantes.size() +1;
+        return participantes.size() + 1;
     }
 
     public List<ParticipanteEvento> getListParticipantes() {
         return Collections.unmodifiableList(participantes);
     }
+    //endregion
 
-    public boolean tieneParticipantes() {
-        return !participantes.isEmpty();
-    }
-
+    //region PARTICIPANTES
     public boolean aniadirParticipantes(ParticipanteEvento participante) {
-
-        if (participante == null || participante.getUsuario() == null) {
+        if (participanteInvalido(participante)) {
             return false;
         }
 
@@ -81,78 +80,22 @@ public class Evento {
             return false;
         }
 
-        if (esCreador(participante.getUsuario())) {
-            return false;
-        }
-
-        if (tieneParticipante(participante.getUsuario())) {
-            return false;
-        }
-
         participantes.add(participante);
         recalcularImporte();
-
         return true;
     }
 
     public boolean importarParticipante(ParticipanteEvento participante) {
-
-        if (participante == null || participante.getUsuario() == null) {
-            return false;
-        }
-
-        if (esCreador(participante.getUsuario())) {
-            return false;
-        }
-
-        if (tieneParticipante(participante.getUsuario())) {
+        if (participanteInvalido(participante)) {
             return false;
         }
 
         participantes.add(participante);
         recalcularImporte();
-
         return true;
     }
 
-    private void recalcularImporte() {
-        double importeParticipante = importeTotal/getParticipantes();
-
-        for (ParticipanteEvento p : participantes) {
-            p.setImporteDebe(importeParticipante);
-        }
-    }
-
-    public boolean tienePagosIniciados() {
-        for (ParticipanteEvento participante : participantes) {
-
-            if (participante.getPago() == null) {
-                continue;
-            }
-
-            EstadoPago estado = participante.getPago().getEstadoPago();
-
-            if (estado == EstadoPago.PAGADO ||
-                    estado == EstadoPago.PENDIENTE_CONFIRMAR) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    public ParticipanteEvento buscarParticipantePorId(int idParticipante) {
-        for (ParticipanteEvento p : participantes) {
-            if (p.getIdParticipante() == idParticipante) {
-                return p;
-            }
-        }
-
-        return null;
-    }
-
     public boolean eliminarParticipante(int idParticipante) {
-
         if (tienePagosIniciados()) {
             return false;
         }
@@ -172,8 +115,18 @@ public class Evento {
         return eliminado;
     }
 
-    public boolean esCreador(Usuario usuario) {
-        return this.creador == usuario;
+    public ParticipanteEvento buscarParticipantePorId(int idParticipante) {
+        for (ParticipanteEvento p : participantes) {
+            if (p.getIdParticipante() == idParticipante) {
+                return p;
+            }
+        }
+
+        return null;
+    }
+
+    public boolean tieneParticipantes() {
+        return !participantes.isEmpty();
     }
 
     public boolean tieneParticipante(Usuario usuario) {
@@ -186,8 +139,11 @@ public class Evento {
         return false;
     }
 
-    public boolean todosLosUsuariosDisponiblesYaParticipan(List<Usuario> usuarios, Usuario usuarioActual) {
+    public boolean esCreador(Usuario usuario) {
+        return this.creador == usuario;
+    }
 
+    public boolean todosLosUsuariosDisponiblesYaParticipan(List<Usuario> usuarios, Usuario usuarioActual) {
         for (Usuario u : usuarios) {
             if (u.isActivo() && u != usuarioActual && !tieneParticipante(u)) {
                 return false;
@@ -196,5 +152,39 @@ public class Evento {
 
         return true;
     }
-}
 
+    private boolean participanteInvalido(ParticipanteEvento participante) {
+        return participante == null ||
+                participante.getUsuario() == null ||
+                esCreador(participante.getUsuario()) ||
+                tieneParticipante(participante.getUsuario());
+    }
+
+    private void recalcularImporte() {
+        double importeParticipante = importeTotal / getParticipantes();
+
+        for (ParticipanteEvento p : participantes) {
+            p.setImporteDebe(importeParticipante);
+        }
+    }
+    //endregion
+
+    //region PAGOS
+    public boolean tienePagosIniciados() {
+        for (ParticipanteEvento participante : participantes) {
+            if (participante.getPago() == null) {
+                continue;
+            }
+
+            EstadoPago estado = participante.getPago().getEstadoPago();
+
+            if (estado == EstadoPago.PAGADO ||
+                    estado == EstadoPago.PENDIENTE_CONFIRMAR) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+    //endregion
+}

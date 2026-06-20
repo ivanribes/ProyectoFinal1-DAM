@@ -7,7 +7,7 @@ public enum EstadoPago {
     PENDIENTE_CONFIRMAR("Pendiente de confirmación"),
     RECHAZADO("Rechazado");
 
-    private String texto;
+    private final String texto;
 
     EstadoPago(String texto) {
         this.texto = texto;
@@ -17,7 +17,8 @@ public enum EstadoPago {
         return texto;
     }
 
-    @Override public String toString() {
+    @Override
+    public String toString() {
         return texto;
     }
 }

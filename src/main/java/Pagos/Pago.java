@@ -1,13 +1,13 @@
 package Pagos;
 
 import Enums.EstadoPago;
+
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 
 public class Pago implements Penalizable {
 
     private static final double PENALIZACION = 0.5;
-
     private static int ID_PAGO = 0;
 
     private final int id;
@@ -21,8 +21,10 @@ public class Pago implements Penalizable {
         this.id = ++ID_PAGO;
         this.importeBase = importeBase;
         this.estadoPago = EstadoPago.PENDIENTE;
+        setImporteFinal();
     }
 
+    //region GETTERS Y SETTERS
     public int getId() {
         return id;
     }
@@ -36,20 +38,8 @@ public class Pago implements Penalizable {
         setImporteFinal();
     }
 
-    public LocalDate getFechaPago() {
-        return fechaPago;
-    }
-
-    public EstadoPago getEstadoPago() {
-        return estadoPago;
-    }
-
-    public void setEstadoPago(EstadoPago estadoPago) {
-        this.estadoPago = estadoPago;
-    }
-
-    public void setFechaPago(LocalDate fechaPago) {
-        this.fechaPago = fechaPago;
+    public double getPenalizacionAplicada() {
+        return penalizacionAplicada;
     }
 
     public void setPenalizacionAplicada(double penalizacionAplicada) {
@@ -61,14 +51,28 @@ public class Pago implements Penalizable {
         return importeFinal;
     }
 
-    public double getPenalizacionAplicada() {
-        return penalizacionAplicada;
-    }
-
     public void setImporteFinal() {
         this.importeFinal = importeBase + penalizacionAplicada;
     }
 
+    public LocalDate getFechaPago() {
+        return fechaPago;
+    }
+
+    public void setFechaPago(LocalDate fechaPago) {
+        this.fechaPago = fechaPago;
+    }
+
+    public EstadoPago getEstadoPago() {
+        return estadoPago;
+    }
+
+    public void setEstadoPago(EstadoPago estadoPago) {
+        this.estadoPago = estadoPago;
+    }
+    //endregion
+
+    //region PENALIZACIÓN
     @Override
     public double calcularPenalizacion(LocalDate fechaLimite, LocalDate fechaActual) {
         int diasRetraso = calcularDias(fechaLimite, fechaActual);
@@ -83,9 +87,32 @@ public class Pago implements Penalizable {
     public int calcularDias(LocalDate fechaLimite, LocalDate fechaActual) {
         return (int) ChronoUnit.DAYS.between(fechaLimite, fechaActual);
     }
+    //endregion
 
+    //region ESTADOS DE PAGO
     public boolean estaPendienteConfirmacion() {
         return estadoPago == EstadoPago.PENDIENTE_CONFIRMAR;
+    }
+
+    public boolean puedeSerSaldado() {
+        return estadoPago == EstadoPago.PENDIENTE ||
+                estadoPago == EstadoPago.RECHAZADO;
+    }
+
+    public boolean solicitarConfirmacion(LocalDate fechaPago) {
+        if (!puedeSerSaldado()) {
+            System.out.println("Este pago no puede ser saldado.");
+            return false;
+        }
+
+        if (fechaPago == null) {
+            System.out.println("La fecha de pago no puede ser nula.");
+            return false;
+        }
+
+        this.fechaPago = fechaPago;
+        this.estadoPago = EstadoPago.PENDIENTE_CONFIRMAR;
+        return true;
     }
 
     public void confirmar() {
@@ -110,26 +137,5 @@ public class Pago implements Penalizable {
 
         this.estadoPago = EstadoPago.RECHAZADO;
     }
-
-    public boolean puedeSerSaldado() {
-        return estadoPago == EstadoPago.PENDIENTE ||
-                estadoPago == EstadoPago.RECHAZADO;
-    }
-
-    public boolean solicitarConfirmacion(LocalDate fechaPago) {
-        if (!puedeSerSaldado()) {
-            System.out.println("Este pago no puede ser saldado.");
-            return false;
-        }
-
-        if (fechaPago == null) {
-            System.out.println("La fecha de pago no puede ser nula.");
-            return false;
-        }
-
-        this.fechaPago = fechaPago;
-        this.estadoPago = EstadoPago.PENDIENTE_CONFIRMAR;
-
-        return true;
-    }
+    //endregion
 }
