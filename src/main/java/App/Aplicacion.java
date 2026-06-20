@@ -54,10 +54,13 @@ public class Aplicacion {
             case 1 -> iniciarSesion();
             case 2 -> System.out.println("Pedir los datos y crear un nuevo usuario");
             case 3 -> {
-                gestorMorosos.sumarDias();
+                int dias = Entrada.leerIntPositivo(
+                        "Introduce la cantidad de dias que quieres aumentar la fecha: ");
+
+                gestorMorosos.sumarDias(dias);
                 gestorMorosos.actualizarPenalizaciones();
             }
-            case 4 -> gestorMorosos.mostrarFecha();
+            case 4 -> System.out.println(gestorMorosos.getFechaModificada());
             case 5 -> {
                 System.out.println("Cerrando aplicación...");
                 return false;
@@ -73,14 +76,8 @@ public class Aplicacion {
         switch (Entrada.leerOpcionMenu("Selecciona una opcion: ", 1, 13)) {
             case 1 -> serviciosUsuario.crearEvento();
             case 2 -> serviciosUsuario.anadirParticipantes();
-            case 3 -> {
-                int dias = Entrada.leerIntPositivo(
-                        "Introduce la cantidad de dias que quieres aumentar la fecha: ");
-
-                gestorMorosos.sumarDias(dias);
-                gestorMorosos.actualizarPenalizaciones();
-            }
-            case 4 -> System.out.println(gestorMorosos.getFechaModificada());
+            case 3 -> serviciosUsuario.eliminarParticipante();
+            case 4 -> serviciosUsuario.consultarEventosCreados();
             case 5 -> serviciosUsuario.consultarEventosDondeParticipo();
             case 6 -> serviciosUsuario.consultarTodosMisEventos();
             case 7 -> serviciosUsuario.consultarPagosPendientes();
