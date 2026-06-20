@@ -35,13 +35,19 @@ public class RankingEventosCreados extends Ranking{
         }
     }
 
-    @Override public void mostrarRanking() {
+    @Override
+    public void mostrarRanking() {
         generarRanking();
 
-        //TODO esto en el super?? crear un String en un metodo y otro que solo lo muestre??
-        List<Map.Entry<Integer, Integer>> lista = new ArrayList<>(rankingEventosCreados.entrySet());
+        List<Map.Entry<Integer, Integer>> lista =
+                new ArrayList<>(rankingEventosCreados.entrySet());
 
-        lista.sort((a,b) ->
+        if (lista.isEmpty()) {
+            System.out.println("Todavía no hay eventos creados para generar este ranking.\n");
+            return;
+        }
+
+        lista.sort((a, b) ->
                 Integer.compare(b.getValue(), a.getValue()));
 
         for (int i = 0; i < 3 && i < lista.size(); i++) {
@@ -66,5 +72,7 @@ public class RankingEventosCreados extends Ranking{
                     entry.getValue()
             );
         }
+
+        System.out.println();
     }
 }

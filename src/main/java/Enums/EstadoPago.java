@@ -4,7 +4,7 @@ public enum EstadoPago {
 
     PENDIENTE("Pendiente"),
     PAGADO("Pagado"),
-    PENDIENTE_CONFIRMAR("Pendiente de confirmacion"),
+    PENDIENTE_CONFIRMAR("Pendiente de confirmación"),
     RECHAZADO("Rechazado");
 
     private String texto;

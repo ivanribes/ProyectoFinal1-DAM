@@ -5,7 +5,6 @@ import Enums.EstadoPago;
 import Eventos.Evento;
 import Usuarios.ParticipanteEvento;
 import Usuarios.Usuario;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -47,16 +46,19 @@ public class RankingMoroso extends Ranking{
         return (double) dias /numPagos;
     }
 
-    @Override public void mostrarRanking() {
-
-
+    @Override
+    public void mostrarRanking() {
         generarRanking();
 
-        //TODO esto en el super?? crear un String en un metodo y otro que solo lo muestre??
+        List<Map.Entry<Integer, Double>> lista =
+                new ArrayList<>(rankingTiempoPago.entrySet());
 
-        List<Map.Entry<Integer, Double>> lista = new ArrayList<>(rankingTiempoPago.entrySet());
+        if (lista.isEmpty()) {
+            System.out.println("Todavía no hay pagos confirmados para generar este ranking.\n");
+            return;
+        }
 
-        lista.sort((a,b)->
+        lista.sort((a, b) ->
                 Double.compare(b.getValue(), a.getValue()));
 
         for (int i = 0; i < 3 && i < lista.size(); i++) {
@@ -65,6 +67,7 @@ public class RankingMoroso extends Ranking{
             Usuario usuario = gestorMorosos.buscarUsuarioID(entry.getKey());
 
             String medalla = "";
+
             switch (i) {
                 case 0 -> medalla = "🥇";
                 case 1 -> medalla = "🥈";
@@ -79,5 +82,7 @@ public class RankingMoroso extends Ranking{
                     entry.getValue()
             );
         }
+
+        System.out.println();
     }
 }

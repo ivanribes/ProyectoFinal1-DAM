@@ -3,6 +3,7 @@ package App;
 import Enums.EstadoPago;
 import Eventos.Evento;
 import Excepciones.UnknownEventException;
+import Excepciones.UnknownPaymentException;
 import Excepciones.UnknownUserException;
 import Ficheros.GestorFicheros;
 import Menu.Menu;
@@ -12,6 +13,8 @@ import Rankings.RankingMoroso;
 import Rankings.RankingPenalizacion;
 import Usuarios.ParticipanteEvento;
 import Usuarios.Usuario;
+import Utilidades.Entrada;
+
 import java.io.IOException;
 
 public class ServiciosUsuario {
@@ -29,22 +32,39 @@ public class ServiciosUsuario {
     public Usuario seleccionarUsuario() throws UnknownUserException {
         gestorMorosos.mostrarUsuarios(usuario);
 
-        int id = Integer.parseInt(IO.readln("Introduce el ID del usuario: "));
+        int id = Entrada.leerIntPositivo("Selecciona un ID: ");
 
         return gestorMorosos.buscarUsuarioID(id);
     }
 
     //region CREAR EVENTO
     public void crearEvento() {
-        gestorMorosos.aniadirEvento(new Evento(nombreEvento(), importeEvento(), usuario));
+        if (usuario == null) {
+            System.out.println("No hay ningún usuario seleccionado.");
+            return;
+        }
+
+        if (!usuario.isActivo()) {
+            System.out.println("No puedes crear eventos porque tu usuario está desactivado.");
+            return;
+        }
+
+        boolean creado = gestorMorosos.aniadirEvento(
+                new Evento(nombreEvento(), importeEvento(), usuario));
+
+        if (creado) {
+            System.out.println("Evento creado correctamente.");
+        } else {
+            System.out.println("No se ha podido crear el evento.");
+        }
     }
 
     private String nombreEvento() {
-        return IO.readln("Introduce el nombre del evento: ");
+        return Entrada.leerNombre("Introduce el nombre del evento: ");
     }
 
     private double importeEvento() {
-        return Double.parseDouble(IO.readln("Introduce el importe total: "));
+        return Entrada.leerDoublePositivo("Introduce el importe del evento: ");
     }
 
     //endregion
@@ -56,27 +76,146 @@ public class ServiciosUsuario {
             if (consultarEventosCreados()) {
                 int idEvento;
 
-                idEvento = Integer.parseInt(IO.readln("Introduce el id del evento: "));
-                evento = gestorMorosos.buscarEvento(idEvento);
+                idEvento = Entrada.leerIntPositivo("Selecciona la ID del evento: ");
+                evento = gestorMorosos.buscarEventoCreadoPorUsuario(idEvento, usuario);
 
+                if (evento.tienePagosIniciados()) {
+                    System.out.println("No se puede modificar el evento porque ya hay pagos realizados o pendientes de confirmación.");
+                    return;
+                }
+
+                if (!gestorMorosos.hayUsuariosActivosDisponibles(usuario)) {
+                    System.out.println("No hay usuarios activos disponibles para añadir al evento.");
+                    return;
+                }
+
+                Usuario usuarioAniadir;
                 if (evento != null) {
-                    Usuario usuarioAniadir;
-                        do {
-                            usuarioAniadir = seleccionarUsuario();
-                            evento.aniadirParticipantes(
-                                    new ParticipanteEvento(usuarioAniadir, evento));
+
+                    if (evento.todosLosUsuariosDisponiblesYaParticipan(gestorMorosos.getUsuarios(), usuario)) {
+                        System.out.println("Todos los usuarios activos disponibles ya participan en este evento.");
+                        return;
+                    }
+
+                    boolean seguirAniadiendo;
+
+                    do {
+                        usuarioAniadir = seleccionarUsuarioActivoParaEvento();
+
+                        if (evento.esCreador(usuarioAniadir)) {
+                            System.out.println("No puedes añadir al creador como participante.");
+                            seguirAniadiendo = Entrada.leerSiNo("Desea intentar añadir otro participante? (si-no): ");
+                            continue;
+                        }
+
+                        if (evento.tieneParticipante(usuarioAniadir)) {
+                            System.out.println("Este usuario ya participa en el evento.");
+                            seguirAniadiendo = Entrada.leerSiNo("Desea intentar añadir otro participante? (si-no): ");
+                            continue;
+                        }
+
+                        boolean aniadido = evento.aniadirParticipantes(
+                                new ParticipanteEvento(usuarioAniadir, evento));
+
+                        if (aniadido) {
                             System.out.printf("%S se ha añadido a %S👤✅%n%n",
                                     usuarioAniadir.getNombre(),
                                     evento.getNombre());
+                        } else {
+                            System.out.println("No se ha podido añadir el participante.");
+                        }
 
-                        } while (IO.readln("Desea introducir mas participantes? (si-no): ")
-                                .equalsIgnoreCase("si"));
+                        if (evento.todosLosUsuariosDisponiblesYaParticipan(
+                                gestorMorosos.getUsuarios(), usuario)) {
+                            System.out.println("Todos los usuarios activos disponibles ya participan en este evento.");
+                            seguirAniadiendo = false;
+                        } else {
+                            seguirAniadiendo = Entrada.leerSiNo("Desea introducir mas participantes? (si-no): ");
+                        }
+
+                    } while (seguirAniadiendo);
                 }
             }
         } catch (UnknownEventException | UnknownUserException e) {
             System.out.println(e.getMessage());
         }
     }
+
+    private Usuario seleccionarUsuarioActivoParaEvento() throws UnknownUserException {
+        gestorMorosos.mostrarUsuariosActivos(usuario);
+
+        int id = Entrada.leerIntPositivo("Selecciona un ID: ");
+
+        return gestorMorosos.buscarUsuarioActivoID(id);
+    }
+    //endregion
+
+    //region ELIMINAR PARTICIPANTE
+    public void eliminarParticipante() {
+        try {
+            if (!consultarEventosCreados()) {
+                return;
+            }
+
+            int idEvento = Entrada.leerIntPositivo("Selecciona la ID del evento: ");
+            Evento evento = gestorMorosos.buscarEventoCreadoPorUsuario(idEvento, usuario);
+
+            if (evento.getCreador() != usuario) {
+                System.out.println("No puedes modificar un evento que no has creado.");
+                return;
+            }
+
+            if (evento.tienePagosIniciados()) {
+                System.out.println("No se puede modificar el evento porque ya hay pagos realizados o pendientes de confirmación.");
+                return;
+            }
+
+            if (!evento.tieneParticipantes()) {
+                System.out.println("Este evento no tiene participantes.");
+                return;
+            }
+
+            mostrarParticipantesEvento(evento);
+
+            int idParticipante = Entrada.leerIntPositivo("Introduce el ID del participante a eliminar: ");
+            ParticipanteEvento participante = evento.buscarParticipantePorId(idParticipante);
+
+            if (participante == null) {
+                System.out.println("No existe ningún participante con ese ID en este evento.");
+                return;
+            }
+
+            if (evento.eliminarParticipante(idParticipante)) {
+                System.out.printf("%s ha sido eliminado del evento %s.%n%n",
+                        participante.getUsuario().getNombre(),
+                        evento.getNombre());
+            }
+
+        } catch (UnknownEventException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    private void mostrarParticipantesEvento(Evento evento) {
+        System.out.printf("Participantes del evento %s:%n%n", evento.getNombre());
+
+        for (ParticipanteEvento p : evento.getListParticipantes()) {
+            System.out.printf("""
+                        [ID PARTICIPANTE: %d]
+                        Usuario: %s
+                        Email: %s
+                        Estado pago: %s
+                        Importe: %.2f€
+                        
+                        """,
+                    p.getIdParticipante(),
+                    p.getUsuario().getNombre(),
+                    p.getUsuario().getEmail(),
+                    p.getPago().getEstadoPago(),
+                    p.getPago().getImporteBase());
+        }
+    }
+
     //endregion
 
     //region CONSULTAR EVENTOS CREADOS
@@ -192,7 +331,7 @@ public class ServiciosUsuario {
                 }
             }
         }
-         if (!hayPendientes) {
+        if (!hayPendientes) {
             System.out.println("No hay pagos pendientes\n");
         }
 
@@ -202,20 +341,21 @@ public class ServiciosUsuario {
 
     //region SALDAR PAGOS
     public void saldarPagos() {
-        int id;
-        Pago pago;
-        if (consultarPagosPendientes()) {
-
-            id = Integer.parseInt(IO.readln("Introduce el ID del pago a confirmar: "));
-
-            pago = gestorMorosos.buscarPago(id);
-            if (pago != null) {
-                pago.setEstadoPago(EstadoPago.PENDIENTE_CONFIRMAR);
-                pago.setFechaPago(gestorMorosos.getFechaModificada());
-            } else {
-                System.out.println("No se ha encontrado el pago.");
+        try {
+            if (!consultarPagosPendientes()) {
+                return;
             }
 
+            int idPago = Entrada.leerIntPositivo("Introduce el ID del pago a saldar: ");
+
+            Pago pago = gestorMorosos.buscarPagoPendienteUsuario(idPago, usuario);
+
+            if (pago.solicitarConfirmacion(gestorMorosos.getFechaModificada())) {
+                System.out.println("Pago enviado para confirmación.");
+            }
+
+        } catch (UnknownPaymentException e) {
+            System.out.println("No se ha encontrado un pago pendiente con esa ID.");
         }
     }
     //endregion
@@ -223,22 +363,28 @@ public class ServiciosUsuario {
     //region CONFIRMAR PAGO
 
     public void confirmarPagos() {
-        Evento evento;
-        Pago pago;
-        int opcion;
-        boolean hayPagos = false;
-        consultarEventosCreados();
+        try {
+            if (!consultarEventosCreados()) {
+                return;
+            }
 
-        int id = Integer.parseInt(IO.readln("Introduce el ID del evento: "));
+            int idEvento = Entrada.leerIntPositivo("Introduce el ID del evento: ");
+            Evento evento = gestorMorosos.buscarEventoCreadoPorUsuario(idEvento, usuario);
 
-        evento = gestorMorosos.buscarEvento(id);
+            if (!evento.tieneParticipantes()) {
+                System.out.println("Este evento no tiene participantes.");
+                return;
+            }
 
-        System.out.println("PAGOS PENDIENTES DE CONFIRMAR:");
-        for (ParticipanteEvento p : evento.getListParticipantes()) {
-            if (p.getPago().getEstadoPago() == EstadoPago.PENDIENTE_CONFIRMAR) {
+            boolean hayPagos = false;
 
+            System.out.println("PAGOS PENDIENTES DE CONFIRMAR:");
 
-                System.out.printf("""
+            for (ParticipanteEvento p : evento.getListParticipantes()) {
+                if (p.getPago().getEstadoPago() == EstadoPago.PENDIENTE_CONFIRMAR) {
+                    hayPagos = true;
+
+                    System.out.printf("""
                                 [ID PAGO: %d]
                                 Usuario: %s
                                 Estado: %s
@@ -248,38 +394,40 @@ public class ServiciosUsuario {
                                 Fecha pago: %s
                                 
                                 """,
-                        p.getPago().getId(),
-                        p.getUsuario().getNombre(),
-                        p.getPago().getEstadoPago(),
-                        p.getPago().getImporteBase(),
-                        p.getPago().getPenalizacionAplicada() > 0
-                                ? String.format("%.2f€", p.getPago().getPenalizacionAplicada())
-                                : "Sin penalización",
-                        p.getPago().getImporteBase() + p.getPago().getPenalizacionAplicada(),
-                        p.getPago().getFechaPago() != null
-                                ? p.getPago().getFechaPago()
-                                : "No realizado"
-                );
-                hayPagos = true;
+                            p.getPago().getId(),
+                            p.getUsuario().getNombre(),
+                            p.getPago().getEstadoPago(),
+                            p.getPago().getImporteBase(),
+                            p.getPago().getPenalizacionAplicada() > 0
+                                    ? String.format("%.2f€", p.getPago().getPenalizacionAplicada())
+                                    : "Sin penalización",
+                            p.getPago().getImporteBase() + p.getPago().getPenalizacionAplicada(),
+                            p.getPago().getFechaPago() != null
+                                    ? p.getPago().getFechaPago()
+                                    : "No realizado"
+                    );
+                }
             }
-        }
 
-        if (hayPagos) {
-            id = Integer.parseInt(IO.readln("Introduce el ID del pago: "));
+            if (!hayPagos) {
+                System.out.println("No hay pagos pendientes de confirmar.\n");
+                return;
+            }
 
-            pago = gestorMorosos.buscarPago(evento, id);
+            int idPago = Entrada.leerIntPositivo("Introduce el ID del pago: ");
+            Pago pago = gestorMorosos.buscarPagoPendienteConfirmar(evento, idPago);
 
             Menu.mostrarMenuPago();
-            opcion = Integer.parseInt(IO.readln("Selecciona una opcion: "));
+            int opcion = Entrada.leerOpcionMenu("Selecciona una opción: ", 1, 3);
 
             switch (opcion) {
-                case 1 -> pago.setEstadoPago(EstadoPago.PAGADO);
-                case 2 -> pago.setEstadoPago(EstadoPago.RECHAZADO);
-                case 3 -> pago.setEstadoPago(EstadoPago.PENDIENTE_CONFIRMAR);
-                default -> System.out.printf("Opción no valida%n");
+                case 1 -> pago.confirmar();
+                case 2 -> pago.rechazar();
+                case 3 -> System.out.println("Operación cancelada.");
             }
-        } else {
-            System.out.println("No hay pagos pendientes de confirmar.\n");
+
+        } catch (UnknownEventException | UnknownPaymentException e) {
+            System.out.println(e.getMessage());
         }
     }
     //endregion
@@ -288,7 +436,7 @@ public class ServiciosUsuario {
     public void verRankings() {
         Menu.mostrarMenuRankings();
 
-        int opcion = Integer.parseInt(IO.readln("Selecciona una opcion: "));
+        int opcion = Entrada.leerOpcionMenu("Selecciona una opción: ", 1, 4);
 
         switch (opcion) {
             case 1 -> {
@@ -323,13 +471,15 @@ public class ServiciosUsuario {
     //endregion
 
     //region DESACTIVAR USUARIO
-    public void desactivarUsuario() {
-        //TODO falta excluir usuarios desactivados de la app
-        /*
-        que no aparezcan a la hora de poder añadirlos a nuevos eventos, pero si deben quedar
-        registros de los eventos en los que ya estan
-         */
+    public boolean desactivarUsuario() {
+        if (!usuario.isActivo()) {
+            System.out.println("El usuario ya está desactivado.");
+            return false;
+        }
+
         usuario.setActivo(false);
+        System.out.println("Usuario desactivado correctamente.");
+        return true;
     }
     //endregion
 }

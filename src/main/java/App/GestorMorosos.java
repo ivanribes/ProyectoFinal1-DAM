@@ -10,6 +10,8 @@ import Pagos.Pago;
 import Rankings.Ranking;
 import Usuarios.ParticipanteEvento;
 import Usuarios.Usuario;
+import Utilidades.Entrada;
+
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -55,14 +57,27 @@ public class GestorMorosos {
         usuarios.add(user);
     }
 
-    public void aniadirEvento(Evento evento) {
+    public boolean aniadirEvento(Evento evento) {
+        if (evento == null) {
+            return false;
+        }
+
+        if (evento.getCreador() == null) {
+            return false;
+        }
+
+        if (!evento.getCreador().isActivo()) {
+            return false;
+        }
+
         eventos.add(evento);
+        return true;
     }
 
     //region MODIFICAR FECHA
     public void sumarDias() {
-        int dias = Integer.parseInt(IO.readln("Introduce la cantidad de dias que quieres " +
-                "aumentar la fecha: "));
+        int dias = Entrada.leerIntPositivo(
+                "Introduce la cantidad de dias que quieres aumentar la fecha: ");
 
         this.fechaModificada = fechaModificada.plusDays(dias);
     }
@@ -74,7 +89,7 @@ public class GestorMorosos {
 
     public void mostrarUsuarios(Usuario usuarioActual) {
 
-        for (Usuario u: usuarios) {
+        for (Usuario u : usuarios) {
             if (u != usuarioActual) {
                 System.out.println("User_ID: " + u.getId() + " --> " + u.getEmail());
             }
@@ -83,7 +98,7 @@ public class GestorMorosos {
 
     public Usuario buscarUsuarioID(int id) throws UnknownUserException {
         for (Usuario u : usuarios) {
-            if (id == u.getId())  {
+            if (id == u.getId()) {
                 return u;
             }
         }
@@ -93,7 +108,7 @@ public class GestorMorosos {
 
     public Evento buscarEvento(int id) throws UnknownEventException {
         for (Evento e : eventos) {
-            if (id == e.getId())  {
+            if (id == e.getId()) {
                 return e;
             }
         }
@@ -101,7 +116,19 @@ public class GestorMorosos {
         throw new UnknownEventException();
     }
 
-    public Pago buscarPago(Evento evento, int idPago) throws UnknownPaymentException{
+    public Evento buscarEventoCreadoPorUsuario(int idEvento, Usuario usuario)
+            throws UnknownEventException {
+
+        for (Evento evento : eventos) {
+            if (evento.getId() == idEvento && evento.getCreador() == usuario) {
+                return evento;
+            }
+        }
+
+        throw new UnknownEventException();
+    }
+
+    public Pago buscarPago(Evento evento, int idPago) throws UnknownPaymentException {
         for (ParticipanteEvento p : evento.getListParticipantes()) {
             if (p.getPago().getId() == idPago) {
                 return p.getPago();
@@ -112,7 +139,7 @@ public class GestorMorosos {
     }
 
     public Pago buscarPago(int idPago) throws UnknownPaymentException {
-        for (Evento e: eventos) {
+        for (Evento e : eventos) {
             for (ParticipanteEvento p : e.getListParticipantes()) {
                 if (p.getPago().getId() == idPago) {
                     return p.getPago();
@@ -133,5 +160,70 @@ public class GestorMorosos {
                 }
             }
         }
+    }
+
+    public Pago buscarPagoPendienteUsuario(int idPago, Usuario usuario)
+            throws UnknownPaymentException {
+
+        for (Evento evento : eventos) {
+            for (ParticipanteEvento participante : evento.getListParticipantes()) {
+                Pago pago = participante.getPago();
+
+                if (participante.getUsuario() == usuario &&
+                        pago.getId() == idPago &&
+                        pago.puedeSerSaldado()) {
+
+                    return pago;
+                }
+            }
+        }
+
+        throw new UnknownPaymentException();
+    }
+
+    public void mostrarUsuariosActivos(Usuario usuarioActual) {
+
+        for (Usuario u : usuarios) {
+            if (u.isActivo() && u != usuarioActual) {
+                System.out.println("User_ID: " + u.getId() + " --> " + u.getEmail());
+            }
+        }
+    }
+
+    public Usuario buscarUsuarioActivoID(int id) throws UnknownUserException {
+
+        for (Usuario u : usuarios) {
+            if (id == u.getId() && u.isActivo()) {
+                return u;
+            }
+        }
+
+        throw new UnknownUserException();
+    }
+
+    public boolean hayUsuariosActivosDisponibles(Usuario usuarioActual) {
+
+        for (Usuario u : usuarios) {
+            if (u.isActivo() && u != usuarioActual) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public Pago buscarPagoPendienteConfirmar(Evento evento, int idPago)
+            throws UnknownPaymentException {
+
+        for (ParticipanteEvento participante : evento.getListParticipantes()) {
+            Pago pago = participante.getPago();
+
+            if (pago.getId() == idPago &&
+                    pago.getEstadoPago() == EstadoPago.PENDIENTE_CONFIRMAR) {
+                return pago;
+            }
+        }
+
+        throw new UnknownPaymentException();
     }
 }

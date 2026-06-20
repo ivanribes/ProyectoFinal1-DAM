@@ -1,5 +1,6 @@
 package Eventos;
 
+import Enums.EstadoPago;
 import Usuarios.ParticipanteEvento;
 import Usuarios.Usuario;
 import java.time.LocalDate;
@@ -66,9 +67,52 @@ public class Evento {
         return Collections.unmodifiableList(participantes);
     }
 
-    public void aniadirParticipantes(ParticipanteEvento participante) {
+    public boolean tieneParticipantes() {
+        return !participantes.isEmpty();
+    }
+
+    public boolean aniadirParticipantes(ParticipanteEvento participante) {
+
+        if (participante == null || participante.getUsuario() == null) {
+            return false;
+        }
+
+        if (tienePagosIniciados()) {
+            return false;
+        }
+
+        if (esCreador(participante.getUsuario())) {
+            return false;
+        }
+
+        if (tieneParticipante(participante.getUsuario())) {
+            return false;
+        }
+
         participantes.add(participante);
         recalcularImporte();
+
+        return true;
+    }
+
+    public boolean importarParticipante(ParticipanteEvento participante) {
+
+        if (participante == null || participante.getUsuario() == null) {
+            return false;
+        }
+
+        if (esCreador(participante.getUsuario())) {
+            return false;
+        }
+
+        if (tieneParticipante(participante.getUsuario())) {
+            return false;
+        }
+
+        participantes.add(participante);
+        recalcularImporte();
+
+        return true;
     }
 
     private void recalcularImporte() {
@@ -77,6 +121,80 @@ public class Evento {
         for (ParticipanteEvento p : participantes) {
             p.setImporteDebe(importeParticipante);
         }
+    }
+
+    public boolean tienePagosIniciados() {
+        for (ParticipanteEvento participante : participantes) {
+
+            if (participante.getPago() == null) {
+                continue;
+            }
+
+            EstadoPago estado = participante.getPago().getEstadoPago();
+
+            if (estado == EstadoPago.PAGADO ||
+                    estado == EstadoPago.PENDIENTE_CONFIRMAR) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public ParticipanteEvento buscarParticipantePorId(int idParticipante) {
+        for (ParticipanteEvento p : participantes) {
+            if (p.getIdParticipante() == idParticipante) {
+                return p;
+            }
+        }
+
+        return null;
+    }
+
+    public boolean eliminarParticipante(int idParticipante) {
+
+        if (tienePagosIniciados()) {
+            return false;
+        }
+
+        ParticipanteEvento participante = buscarParticipantePorId(idParticipante);
+
+        if (participante == null) {
+            return false;
+        }
+
+        boolean eliminado = participantes.remove(participante);
+
+        if (eliminado) {
+            recalcularImporte();
+        }
+
+        return eliminado;
+    }
+
+    public boolean esCreador(Usuario usuario) {
+        return this.creador == usuario;
+    }
+
+    public boolean tieneParticipante(Usuario usuario) {
+        for (ParticipanteEvento participante : participantes) {
+            if (participante.getUsuario() == usuario) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public boolean todosLosUsuariosDisponiblesYaParticipan(List<Usuario> usuarios, Usuario usuarioActual) {
+
+        for (Usuario u : usuarios) {
+            if (u.isActivo() && u != usuarioActual && !tieneParticipante(u)) {
+                return false;
+            }
+        }
+
+        return true;
     }
 }
 

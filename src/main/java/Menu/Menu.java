@@ -19,16 +19,17 @@ public class Menu {
                  === MENU USUARIO ===
                 1. Crear evento
                 2. Añadir participantes
-                3. Consultar eventos creados
-                4. Consultar eventos donde participo
-                5. Consultar todos mis eventos
-                6. Consultar pagos pendientes
-                7. Saldar pagos pendientes
-                8. Confirmar pagos
-                9. Ver rankings
-                10. Exportar mis eventos
-                11. Deshabilitar usuario falta implementar
-                12. Cerrar sesión
+                3. Eliminar participante
+                4. Consultar eventos creados
+                5. Consultar eventos donde participo
+                6. Consultar todos mis eventos
+                7. Consultar pagos pendientes
+                8. Saldar pagos pendientes
+                9. Confirmar pagos
+                10. Ver rankings
+                11. Exportar mis eventos
+                12. Deshabilitar usuario falta implementar
+                13. Cerrar sesión
                 """);
     }
 

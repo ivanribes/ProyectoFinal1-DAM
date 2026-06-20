@@ -1,14 +1,13 @@
 package Ficheros;
 
-
 import App.GestorMorosos;
 import Enums.EstadoPago;
 import Eventos.Evento;
 import Excepciones.UnknownEventException;
 import Excepciones.UnknownUserException;
+import Pagos.Pago;
 import Usuarios.ParticipanteEvento;
 import Usuarios.Usuario;
-
 import java.io.*;
 import java.time.LocalDate;
 
@@ -161,21 +160,38 @@ public class GestorFicheros {
 
         ParticipanteEvento participante = new ParticipanteEvento(usuario, evento);
 
-        evento.aniadirParticipantes(participante);
+        boolean aniadido = evento.importarParticipante(participante);
+
+        if (!aniadido) {
+            System.out.printf(
+                    "No se ha podido importar el participante con ID usuario %d en el evento %d.%n",
+                    idUsuario,
+                    idEvento
+            );
+            return;
+        }
 
         if (fechaPago != null) {
-            participante.getPago().setFechaPago(fechaPago);
+            Pago pago = participante.getPago();
+
+            if (pago == null) {
+                System.out.println("No se ha podido asignar el pago al participante importado.");
+                return;
+            }
+
+            pago.setFechaPago(fechaPago);
 
             int estadoRandom = (int) (Math.random() * 3);
 
             switch (estadoRandom) {
-                case 0 -> participante.getPago().setEstadoPago(EstadoPago.PAGADO);
-                case 1 -> participante.getPago().setEstadoPago(EstadoPago.RECHAZADO);
-                case 2 -> participante.getPago().setEstadoPago(EstadoPago.PENDIENTE_CONFIRMAR);
+                case 0 -> pago.setEstadoPago(EstadoPago.PAGADO);
+                case 1 -> pago.setEstadoPago(EstadoPago.RECHAZADO);
+                case 2 -> pago.setEstadoPago(EstadoPago.PENDIENTE_CONFIRMAR);
             }
 
-            participante.getPago().setPenalizacionAplicada(participante.getPago()
-                    .calcularPenalizacion(evento.getFechaPagoLimite(), fechaPago));
+            pago.setPenalizacionAplicada(
+                    pago.calcularPenalizacion(evento.getFechaPagoLimite(), fechaPago)
+            );
         }
     }
 

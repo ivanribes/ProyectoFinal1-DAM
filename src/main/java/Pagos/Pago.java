@@ -83,4 +83,53 @@ public class Pago implements Penalizable {
     public int calcularDias(LocalDate fechaLimite, LocalDate fechaActual) {
         return (int) ChronoUnit.DAYS.between(fechaLimite, fechaActual);
     }
+
+    public boolean estaPendienteConfirmacion() {
+        return estadoPago == EstadoPago.PENDIENTE_CONFIRMAR;
+    }
+
+    public void confirmar() {
+        if (!estaPendienteConfirmacion()) {
+            System.out.println("Solo se pueden confirmar pagos pendientes de confirmación.");
+            return;
+        }
+
+        if (fechaPago == null) {
+            System.out.println("No se puede confirmar un pago sin fecha de pago.");
+            return;
+        }
+
+        this.estadoPago = EstadoPago.PAGADO;
+    }
+
+    public void rechazar() {
+        if (!estaPendienteConfirmacion()) {
+            System.out.println("Solo se pueden rechazar pagos pendientes de confirmación.");
+            return;
+        }
+
+        this.estadoPago = EstadoPago.RECHAZADO;
+    }
+
+    public boolean puedeSerSaldado() {
+        return estadoPago == EstadoPago.PENDIENTE ||
+                estadoPago == EstadoPago.RECHAZADO;
+    }
+
+    public boolean solicitarConfirmacion(LocalDate fechaPago) {
+        if (!puedeSerSaldado()) {
+            System.out.println("Este pago no puede ser saldado.");
+            return false;
+        }
+
+        if (fechaPago == null) {
+            System.out.println("La fecha de pago no puede ser nula.");
+            return false;
+        }
+
+        this.fechaPago = fechaPago;
+        this.estadoPago = EstadoPago.PENDIENTE_CONFIRMAR;
+
+        return true;
+    }
 }

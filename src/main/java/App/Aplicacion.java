@@ -4,12 +4,14 @@ import Excepciones.UnknownUserException;
 import Menu.Menu;
 import Prueba.DatosPrueba;
 import Usuarios.Usuario;
+import Utilidades.Entrada;
+
 import java.io.IOException;
 
 public class Aplicacion {
     private final GestorMorosos gestorMorosos;
     private Usuario usuarioActual;
-    private ServiciosUsuario serviciosUsuario;
+    private final ServiciosUsuario serviciosUsuario;
 
     public Aplicacion(GestorMorosos gestorMorosos, ServiciosUsuario serviciosUsuario) {
         this.usuarioActual = null;
@@ -35,9 +37,7 @@ public class Aplicacion {
             if (usuarioActual == null) {
                 Menu.mostrarMenuGeneral();
 
-                opcion = Integer.parseInt(IO.readln("Selecciona una opcion: "));
-
-                switch (opcion) {
+                switch (Entrada.leerOpcionMenu("Selecciona una opcion: ", 1, 5)) {
                     case 1-> {
                         try {
                             this.usuarioActual = serviciosUsuario.seleccionarUsuario();
@@ -62,27 +62,26 @@ public class Aplicacion {
             } else {
                 Menu.mostrarMenuUsuario();
 
-                opcion = Integer.parseInt(IO.readln("Selecciona una opción: "));
-
-                switch (opcion) {
+                switch (Entrada.leerOpcionMenu("Selecciona un opcion: ", 1, 13)) {
                     case 1 -> serviciosUsuario.crearEvento();
                     case 2 -> serviciosUsuario.anadirParticipantes();
-                    case 3 -> serviciosUsuario.consultarEventosCreados();
-                    case 4 -> serviciosUsuario.consultarEventosDondeParticipo();
-                    case 5 -> serviciosUsuario.consultarTodosMisEventos();
-                    case 6 -> serviciosUsuario.consultarPagosPendientes();
-                    case 7 -> serviciosUsuario.saldarPagos();
-                    case 8 -> serviciosUsuario.confirmarPagos();
-                    case 9 -> serviciosUsuario.verRankings();
-                    case 10 -> {
+                    case 3 -> serviciosUsuario.eliminarParticipante();
+                    case 4 -> serviciosUsuario.consultarEventosCreados();
+                    case 5 -> serviciosUsuario.consultarEventosDondeParticipo();
+                    case 6 -> serviciosUsuario.consultarTodosMisEventos();
+                    case 7 -> serviciosUsuario.consultarPagosPendientes();
+                    case 8 -> serviciosUsuario.saldarPagos();
+                    case 9 -> serviciosUsuario.confirmarPagos();
+                    case 10 -> serviciosUsuario.verRankings();
+                    case 11 -> {
                         try {
                             serviciosUsuario.exportarMisEventos(usuarioActual);
                         } catch (IOException e) {
                             System.out.println("Error al exportar los eventos.");
                         }
                     }
-                    case 11 -> serviciosUsuario.desactivarUsuario();
-                    case 12 -> cerrarSesion();
+                    case 12 -> serviciosUsuario.desactivarUsuario();
+                    case 13 -> cerrarSesion();
                     default -> System.out.println("Opción no válida");
                 }
             }
