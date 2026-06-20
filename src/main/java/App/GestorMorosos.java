@@ -9,7 +9,6 @@ import Pagos.Pago;
 import Rankings.Ranking;
 import Usuarios.ParticipanteEvento;
 import Usuarios.Usuario;
-import Utilidades.Entrada;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -58,20 +57,28 @@ public class GestorMorosos {
         usuarios.add(user);
     }
 
-    public void mostrarUsuarios(Usuario usuarioActual) {
+    public List<Usuario> obtenerUsuariosDisponibles(Usuario usuarioActual) {
+        ArrayList<Usuario> usuariosDisponibles = new ArrayList<>();
+
         for (Usuario u : usuarios) {
             if (u != usuarioActual) {
-                System.out.println("User_ID: " + u.getId() + " --> " + u.getEmail());
+                usuariosDisponibles.add(u);
             }
         }
+
+        return usuariosDisponibles;
     }
 
-    public void mostrarUsuariosActivos(Usuario usuarioActual) {
+    public List<Usuario> obtenerUsuariosActivosDisponibles(Usuario usuarioActual) {
+        ArrayList<Usuario> usuariosDisponibles = new ArrayList<>();
+
         for (Usuario u : usuarios) {
             if (u.isActivo() && u != usuarioActual) {
-                System.out.println("User_ID: " + u.getId() + " --> " + u.getEmail());
+                usuariosDisponibles.add(u);
             }
         }
+
+        return usuariosDisponibles;
     }
 
     public Usuario buscarUsuarioID(int id) throws UnknownUserException {
@@ -208,9 +215,11 @@ public class GestorMorosos {
             for (ParticipanteEvento p : e.getListParticipantes()) {
                 if (p.getPago().getEstadoPago() == EstadoPago.PENDIENTE ||
                         p.getPago().getEstadoPago() == EstadoPago.RECHAZADO) {
+
                     p.getPago().setPenalizacionAplicada(
                             p.getPago().calcularPenalizacion(
-                                    e.getFechaPagoLimite(), fechaModificada));
+                                    e.getFechaPagoLimite(),
+                                    fechaModificada));
                 }
             }
         }
@@ -218,15 +227,8 @@ public class GestorMorosos {
     //endregion
 
     //region MODIFICAR FECHA
-    public void sumarDias() {
-        int dias = Entrada.leerIntPositivo(
-                "Introduce la cantidad de dias que quieres aumentar la fecha: ");
-
+    public void sumarDias(int dias) {
         this.fechaModificada = fechaModificada.plusDays(dias);
-    }
-
-    public void mostrarFecha() {
-        System.out.println(fechaModificada);
     }
     //endregion
 }

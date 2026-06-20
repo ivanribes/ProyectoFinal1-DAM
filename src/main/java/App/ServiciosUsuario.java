@@ -32,7 +32,7 @@ public class ServiciosUsuario {
 
     //region SELECCIONAR USUARIO
     public Usuario seleccionarUsuario() throws UnknownUserException {
-        gestorMorosos.mostrarUsuarios(usuario);
+        mostrarUsuariosDisponibles();
 
         int id = Entrada.leerIntPositivo("Selecciona un ID: ");
 
@@ -40,11 +40,23 @@ public class ServiciosUsuario {
     }
 
     private Usuario seleccionarUsuarioActivoParaEvento() throws UnknownUserException {
-        gestorMorosos.mostrarUsuariosActivos(usuario);
+        mostrarUsuariosActivosDisponibles();
 
         int id = Entrada.leerIntPositivo("Selecciona un ID: ");
 
         return gestorMorosos.buscarUsuarioActivoID(id);
+    }
+
+    private void mostrarUsuariosDisponibles() {
+        for (Usuario u : gestorMorosos.obtenerUsuariosDisponibles(usuario)) {
+            System.out.println("User_ID: " + u.getId() + " --> " + u.getEmail());
+        }
+    }
+
+    private void mostrarUsuariosActivosDisponibles() {
+        for (Usuario u : gestorMorosos.obtenerUsuariosActivosDisponibles(usuario)) {
+            System.out.println("User_ID: " + u.getId() + " --> " + u.getEmail());
+        }
     }
     //endregion
 
