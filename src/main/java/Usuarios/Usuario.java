@@ -16,6 +16,13 @@ public class Usuario {
         this.activo = true;
     }
 
+    public Usuario (int id, String nombre, String email, boolean activo) {
+        this.id = id;
+        this.nombre = nombre;
+        this.email = email;
+        this.activo = activo;
+    }
+
     public int getId() {
         return id;
     }

@@ -1,4 +1,4 @@
-package BD;
+package Bd;
 
 import java.sql.Connection;
 import java.sql.SQLException;
