@@ -108,8 +108,7 @@ public class ServiciosUsuario {
             boolean seguirAniadiendo;
 
             do {
-                List<Usuario> usuariosDisponibles =
-                        gestorMorosos.obtenerUsuariosDisponiblesParaEvento(evento);
+                List<Usuario> usuariosDisponibles = gestorMorosos.obtenerUsuariosDisponiblesParaEvento(evento);
 
                 if (usuariosDisponibles.isEmpty()) {
                     System.out.println("No hay usuarios disponibles para añadir a este evento.");
@@ -124,7 +123,7 @@ public class ServiciosUsuario {
                 boolean aniadido = gestorMorosos.aniadirParticipanteAEvento(evento, usuarioAniadir);
 
                 if (aniadido) {
-                    System.out.printf("%s se ha añadido a %s 👤✅%n%n",
+                    System.out.printf("%s se ha añadido a %s ✅%n%n",
                             usuarioAniadir.getNombre(),
                             evento.getNombre());
                 } else {
@@ -143,11 +142,6 @@ public class ServiciosUsuario {
     private boolean puedeModificarParticipantes(Evento evento) {
         if (evento.tienePagosIniciados()) {
             System.out.println("No se puede modificar el evento porque ya hay pagos realizados o pendientes de confirmación.");
-            return false;
-        }
-
-        if (gestorMorosos.obtenerUsuariosDisponiblesParaEvento(evento).isEmpty()) {
-            System.out.println("No hay usuarios disponibles para añadir al evento.");
             return false;
         }
 
@@ -192,11 +186,6 @@ public class ServiciosUsuario {
             Evento evento = gestorMorosos.buscarEventoCreadoPorUsuario(idEvento, usuario);
 
             if (!puedeModificarParticipantes(evento)) {
-                return;
-            }
-
-            if (evento.tienePagosIniciados()) {
-                System.out.println("No se puede modificar el evento porque ya hay pagos realizados o pendientes de confirmación.");
                 return;
             }
 
