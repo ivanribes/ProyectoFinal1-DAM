@@ -41,7 +41,7 @@ public class ServiciosUsuario {
 
         int id = Entrada.leerIntPositivo("Selecciona un ID: ");
 
-        return gestorMorosos.buscarUsuarioID(id);
+        return gestorMorosos.buscarUsuarioActivoID(id);
     }
 
     private Usuario seleccionarUsuarioActivoParaEvento() throws UnknownUserException {
@@ -100,6 +100,10 @@ public class ServiciosUsuario {
 
             int idEvento = Entrada.leerIntPositivo("Selecciona la ID del evento: ");
             Evento evento = gestorMorosos.buscarEventoCreadoPorUsuario(idEvento, usuario);
+
+            if (!puedeModificarParticipantes(evento)) {
+                return;
+            }
 
             boolean seguirAniadiendo;
 
@@ -186,6 +190,10 @@ public class ServiciosUsuario {
 
             int idEvento = Entrada.leerIntPositivo("Selecciona la ID del evento: ");
             Evento evento = gestorMorosos.buscarEventoCreadoPorUsuario(idEvento, usuario);
+
+            if (!puedeModificarParticipantes(evento)) {
+                return;
+            }
 
             if (evento.tienePagosIniciados()) {
                 System.out.println("No se puede modificar el evento porque ya hay pagos realizados o pendientes de confirmación.");

@@ -63,6 +63,20 @@ public class GestorMorosos {
         usuarioDAO.insertarUsuario(nombre, email);
     }
 
+    public Usuario registrarUsuario(String nombre, String email) {
+        Usuario usuarioExistente = usuarioDAO.buscarPorEmail(email);
+
+        if (usuarioExistente == null) {
+            return usuarioDAO.insertarUsuario(nombre, email);
+        }
+
+        if (!usuarioExistente.isActivo()) {
+            return usuarioDAO.reactivarUsuario(email);
+        }
+
+        return null;
+    }
+
     public boolean aniadirParticipanteAEvento(Evento evento, Usuario usuario) {
         if (evento == null || usuario == null) {
             return false;

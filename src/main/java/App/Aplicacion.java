@@ -29,8 +29,7 @@ public class Aplicacion {
     }
 
     public void iniciar() {
-        cargarUsuarios();
-//        DatosPrueba.cargarDatosPrueba(gestorMorosos);
+        System.out.println("Iniciando...");
         ejecutarPrograma();
     }
 
@@ -52,7 +51,7 @@ public class Aplicacion {
 
         switch (Entrada.leerOpcionMenu("Selecciona una opcion: ", 1, 5)) {
             case 1 -> iniciarSesion();
-            case 2 -> gestorMorosos.insertarUsuario(Entrada.leerNombre("Introduce el nombre de usuario:"),
+            case 2 -> gestorMorosos.registrarUsuario(Entrada.leerNombre("Introduce el nombre de usuario:"),
                     Entrada.leerNombre("Introduce el correo electronico:"));
             case 3 -> {
                 int dias = Entrada.leerIntPositivo(
@@ -116,35 +115,6 @@ public class Aplicacion {
         } catch (IOException e) {
             System.out.println("Error al exportar los eventos.");
         }
-    }
-    //endregion
-
-    //region CARGA INICIAL
-    private void cargarUsuarios() {
-        System.out.println("Cargando aplicacion...");
-
-        gestorMorosos.aniadirUsuario(
-                new Usuario("Carlos Martinez", "carlos.martinez@gmail.com"));
-        gestorMorosos.aniadirUsuario(
-                new Usuario("Laura Gomez", "laura.gomez@gmail.com"));
-        gestorMorosos.aniadirUsuario(
-                new Usuario("David Fernandez", "david.fernandez@gmail.com"));
-        gestorMorosos.aniadirUsuario(
-                new Usuario("Marta Lopez", "marta.lopez@gmail.com"));
-        gestorMorosos.aniadirUsuario(
-                new Usuario("Sergio Navarro", "sergio.navarro@gmail.com"));
-        gestorMorosos.aniadirUsuario(
-                new Usuario("Andrea Ruiz", "andrea.ruiz@gmail.com"));
-        gestorMorosos.aniadirUsuario(
-                new Usuario("Pablo Torres", "pablo.torres@gmail.com"));
-        gestorMorosos.aniadirUsuario(
-                new Usuario("Lucia Moreno", "lucia.moreno@gmail.com"));
-        gestorMorosos.aniadirUsuario(
-                new Usuario("Javier Castillo", "javier.castillo@gmail.com"));
-        gestorMorosos.aniadirUsuario(
-                new Usuario("Elena Romero", "elena.romero@gmail.com"));
-
-        // En caso de implementar base de datos se eliminaria esta carga "manual"
     }
     //endregion
 }

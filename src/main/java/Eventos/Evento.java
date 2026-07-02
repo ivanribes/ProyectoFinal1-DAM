@@ -130,6 +130,10 @@ public class Evento {
     }
 
     public boolean tieneParticipante(Usuario usuario) {
+        if (usuario == null) {
+            return false;
+        }
+
         for (ParticipanteEvento participante : participantes) {
             if (participante.getUsuario().getId() == usuario.getId()) {
                 return true;
@@ -141,16 +145,6 @@ public class Evento {
 
     public boolean esCreador(Usuario usuario) {
         return usuario != null && creador.getId() == usuario.getId();
-    }
-
-    public boolean todosLosUsuariosDisponiblesYaParticipan(List<Usuario> usuarios, Usuario usuarioActual) {
-        for (Usuario u : usuarios) {
-            if (u.isActivo() && u != usuarioActual && !tieneParticipante(u)) {
-                return false;
-            }
-        }
-
-        return true;
     }
 
     private boolean participanteInvalido(ParticipanteEvento participante) {
