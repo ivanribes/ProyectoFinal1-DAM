@@ -1,5 +1,6 @@
 package App;
 
+import Bd.DAO.EventoDAO;
 import Bd.DAO.UsuarioDAO;
 import Enums.EstadoPago;
 import Eventos.Evento;
@@ -18,17 +19,17 @@ import java.util.List;
 public class GestorMorosos {
 
     private final ArrayList<Usuario> usuarios;
-    private final ArrayList<Evento> eventos;
     private Ranking ranking;
     private final UsuarioDAO usuarioDAO;
+    private final EventoDAO eventoDAO;
 
     // Para pruebas de penalización
     private LocalDate fechaModificada;
 
     public GestorMorosos() {
         this.usuarioDAO = new UsuarioDAO();
+        this.eventoDAO = new EventoDAO();
         this.usuarios = new ArrayList<>();
-        this.eventos = new ArrayList<>();
         this.fechaModificada = LocalDate.now();
     }
 
@@ -42,7 +43,7 @@ public class GestorMorosos {
     }
 
     public List<Evento> getEventos() {
-        return Collections.unmodifiableList(eventos);
+        return eventoDAO.buscarTodos();
     }
 
     public Ranking getRanking() {
@@ -161,28 +162,31 @@ public class GestorMorosos {
     //endregion
 
     //region EVENTOS
-    public boolean aniadirEvento(Evento evento) {
-        if (evento == null) {
-            return false;
+    public Evento crearEvento(String nombre, double importeTotal, String descripcion, Usuario creador) {
+        if (creador == null || !creador.isActivo()) {
+            return null;
         }
 
-        if (evento.getCreador() == null) {
-            return false;
+        return eventoDAO.insertar(nombre, importeTotal, creador.getId(), descripcion);
+    }
+
+    public Evento aniadirEvento(Evento evento) {
+        if (evento == null || evento.getCreador() == null) {
+            return null;
         }
 
-        if (!evento.getCreador().isActivo()) {
-            return false;
-        }
-
-        eventos.add(evento);
-        return true;
+        return eventoDAO.insertar(
+                evento.getNombre(),
+                evento.getImporteTotal(),
+                evento.getCreador().getId(),
+                evento.getDescripcion());
     }
 
     public Evento buscarEvento(int id) throws UnknownEventException {
-        for (Evento e : eventos) {
-            if (id == e.getId()) {
-                return e;
-            }
+        Evento evento = eventoDAO.buscarPorId(id);
+
+        if (evento != null) {
+            return evento;
         }
 
         throw new UnknownEventException();
@@ -191,13 +195,21 @@ public class GestorMorosos {
     public Evento buscarEventoCreadoPorUsuario(int idEvento, Usuario usuario)
             throws UnknownEventException {
 
-        for (Evento evento : eventos) {
-            if (evento.getId() == idEvento && evento.getCreador() == usuario) {
-                return evento;
-            }
+        Evento evento = eventoDAO.buscarPorId(idEvento);
+
+        if (evento != null && evento.getCreador().getId() == usuario.getId()) {
+            return evento;
         }
 
         throw new UnknownEventException();
+    }
+
+    public List<Evento> obtenerEventosCreadosPor(Usuario usuario) {
+        if (usuario == null) {
+            return new ArrayList<>();
+        }
+
+        return eventoDAO.buscarPorCreador(usuario.getId());
     }
     //endregion
 
@@ -213,7 +225,7 @@ public class GestorMorosos {
     }
 
     public Pago buscarPago(int idPago) throws UnknownPaymentException {
-        for (Evento e : eventos) {
+        for (Evento e : eventoDAO.buscarTodos()) {
             for (ParticipanteEvento p : e.getListParticipantes()) {
                 if (p.getPago().getId() == idPago) {
                     return p.getPago();
@@ -227,7 +239,7 @@ public class GestorMorosos {
     public Pago buscarPagoPendienteUsuario(int idPago, Usuario usuario)
             throws UnknownPaymentException {
 
-        for (Evento evento : eventos) {
+        for (Evento evento : eventoDAO.buscarTodos()) {
             for (ParticipanteEvento participante : evento.getListParticipantes()) {
                 Pago pago = participante.getPago();
 
@@ -259,7 +271,7 @@ public class GestorMorosos {
     }
 
     public void actualizarPenalizaciones() {
-        for (Evento e : eventos) {
+        for (Evento e : eventoDAO.buscarTodos()) {
             for (ParticipanteEvento p : e.getListParticipantes()) {
                 if (p.getPago().getEstadoPago() == EstadoPago.PENDIENTE ||
                         p.getPago().getEstadoPago() == EstadoPago.RECHAZADO) {

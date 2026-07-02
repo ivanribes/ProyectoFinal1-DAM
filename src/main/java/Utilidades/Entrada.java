@@ -124,4 +124,8 @@ public class Entrada {
             }
         }
     }
+
+    public static String leer(String texto) {
+        return texto;
+    }
 }

@@ -29,6 +29,24 @@ public class Evento {
         this.fechaCreacion = LocalDate.now();
         this.fechaPagoLimite = fechaCreacion.plusDays(2);
         this.creador = creador;
+        this.descripcion = null;
+        this.participantes = new ArrayList<>();
+    }
+
+    public Evento(int id, String nombre, double importeTotal, Usuario creador,
+                  LocalDate fechaCreacion, LocalDate fechaPagoLimite) {
+        this(id, nombre, importeTotal, creador, fechaCreacion, fechaPagoLimite, null);
+    }
+
+    public Evento(int id, String nombre, double importeTotal, Usuario creador,
+                  LocalDate fechaCreacion, LocalDate fechaPagoLimite, String descripcion) {
+        this.id = id;
+        this.nombre = nombre;
+        this.importeTotal = importeTotal;
+        this.fechaCreacion = fechaCreacion;
+        this.fechaPagoLimite = fechaPagoLimite;
+        this.creador = creador;
+        this.descripcion = descripcion;
         this.participantes = new ArrayList<>();
     }
 

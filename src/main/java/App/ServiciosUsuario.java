@@ -72,10 +72,9 @@ public class ServiciosUsuario {
             return;
         }
 
-        boolean creado = gestorMorosos.aniadirEvento(
-                new Evento(nombreEvento(), importeEvento(), usuario));
+        Evento evento = gestorMorosos.crearEvento(nombreEvento(), importeEvento(), descripcionEvento(), usuario);
 
-        if (creado) {
+        if (evento != null) {
             System.out.println("Evento creado correctamente.");
         } else {
             System.out.println("No se ha podido crear el evento.");
@@ -88,6 +87,10 @@ public class ServiciosUsuario {
 
     private double importeEvento() {
         return Entrada.leerDoublePositivo("Introduce el importe del evento: ");
+    }
+
+    private String descripcionEvento() {
+        return Entrada.leer("Introduce la descripción del evento (opcional): ");
     }
     //endregion
 
@@ -238,22 +241,19 @@ public class ServiciosUsuario {
 
     //region CONSULTAR EVENTOS
     public boolean consultarEventosCreados() {
-        boolean hayEventos = false;
+        List<Evento> eventosCreados = gestorMorosos.obtenerEventosCreadosPor(usuario);
 
-        for (Evento e : gestorMorosos.getEventos()) {
-            if (e.getCreador() == usuario) {
-                hayEventos = true;
-                mostrarEventoCreado(e);
-            }
+        if (eventosCreados.isEmpty()) {
+            System.out.println("No hay eventos creados.\n");
+            return false;
+        }
+
+        for (Evento e : eventosCreados) {
+            mostrarEventoCreado(e);
         }
 
         System.out.println();
-
-        if (!hayEventos) {
-            System.out.println("No hay eventos creados.");
-        }
-
-        return hayEventos;
+        return true;
     }
 
     public void consultarEventosDondeParticipo() {
