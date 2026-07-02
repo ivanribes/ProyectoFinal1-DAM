@@ -15,6 +15,7 @@ importe_total numeric NOT NULL CHECK (importe_total > 0::numeric),
 creador_id integer NOT NULL,
 fecha_creacion date NOT NULL,
 fecha_pago_limite date NOT NULL,
+descripcion text,
 CONSTRAINT eventos_pkey PRIMARY KEY (id),
 CONSTRAINT fk_eventos_creador FOREIGN KEY (creador_id) REFERENCES public.usuarios(id)
 );
