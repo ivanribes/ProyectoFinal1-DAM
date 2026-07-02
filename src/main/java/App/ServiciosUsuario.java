@@ -101,10 +101,6 @@ public class ServiciosUsuario {
             int idEvento = Entrada.leerIntPositivo("Selecciona la ID del evento: ");
             Evento evento = gestorMorosos.buscarEventoCreadoPorUsuario(idEvento, usuario);
 
-            if (!puedeModificarParticipantes(evento)) {
-                return;
-            }
-
             boolean seguirAniadiendo;
 
             do {
@@ -119,11 +115,9 @@ public class ServiciosUsuario {
                 mostrarUsuariosDisponibles(usuariosDisponibles);
 
                 int idUsuario = Entrada.leerIntPositivo("Selecciona el ID del usuario a añadir: ");
-
                 Usuario usuarioAniadir = buscarUsuarioEnLista(usuariosDisponibles, idUsuario);
 
-                boolean aniadido = evento.aniadirParticipantes(
-                        new ParticipanteEvento(usuarioAniadir, evento));
+                boolean aniadido = gestorMorosos.aniadirParticipanteAEvento(evento, usuarioAniadir);
 
                 if (aniadido) {
                     System.out.printf("%s se ha añadido a %s 👤✅%n%n",
@@ -131,13 +125,6 @@ public class ServiciosUsuario {
                             evento.getNombre());
                 } else {
                     System.out.println("No se ha podido añadir el participante.");
-                }
-
-                usuariosDisponibles = gestorMorosos.obtenerUsuariosDisponiblesParaEvento(evento);
-
-                if (usuariosDisponibles.isEmpty()) {
-                    System.out.println("Todos los usuarios disponibles ya participan en este evento.");
-                    return;
                 }
 
                 seguirAniadiendo = Entrada.leerSiNo("¿Desea introducir más participantes? (si-no): ");

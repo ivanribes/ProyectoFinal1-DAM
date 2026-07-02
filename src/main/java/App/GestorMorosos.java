@@ -63,6 +63,27 @@ public class GestorMorosos {
         usuarioDAO.insertarUsuario(nombre, email);
     }
 
+    public boolean aniadirParticipanteAEvento(Evento evento, Usuario usuario) {
+        if (evento == null || usuario == null) {
+            return false;
+        }
+
+        if (evento.tienePagosIniciados()) {
+            return false;
+        }
+
+        if (evento.esCreador(usuario)) {
+            return false;
+        }
+
+        if (evento.tieneParticipante(usuario)) {
+            return false;
+        }
+
+        ParticipanteEvento participante = new ParticipanteEvento(usuario, evento);
+        return evento.aniadirParticipantes(participante);
+    }
+
     public List<Usuario> obtenerUsuariosDisponibles(Usuario usuarioActual) {
         List<Usuario> usuarios = usuarioDAO.buscarTodosActivos();
         List<Usuario> usuariosDisponibles = new ArrayList<>();
