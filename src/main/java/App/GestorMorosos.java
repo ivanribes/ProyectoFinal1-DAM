@@ -1,5 +1,6 @@
 package App;
 
+import Bd.DAO.UsuarioDAO;
 import Enums.EstadoPago;
 import Eventos.Evento;
 import Excepciones.UnknownEventException;
@@ -9,7 +10,6 @@ import Pagos.Pago;
 import Rankings.Ranking;
 import Usuarios.ParticipanteEvento;
 import Usuarios.Usuario;
-
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -20,11 +20,13 @@ public class GestorMorosos {
     private final ArrayList<Usuario> usuarios;
     private final ArrayList<Evento> eventos;
     private Ranking ranking;
+    private final UsuarioDAO usuarioDAO;
 
     // Para pruebas de penalización
     private LocalDate fechaModificada;
 
     public GestorMorosos() {
+        this.usuarioDAO = new UsuarioDAO();
         this.usuarios = new ArrayList<>();
         this.eventos = new ArrayList<>();
         this.fechaModificada = LocalDate.now();
@@ -57,11 +59,21 @@ public class GestorMorosos {
         usuarios.add(user);
     }
 
+    public void insertarUsuario(String nombre, String email) {
+        usuarioDAO.insertarUsuario(nombre, email);
+    }
+
     public List<Usuario> obtenerUsuariosDisponibles(Usuario usuarioActual) {
-        ArrayList<Usuario> usuariosDisponibles = new ArrayList<>();
+        List<Usuario> usuarios = usuarioDAO.buscarTodosActivos();
+        List<Usuario> usuariosDisponibles = new ArrayList<>();
+
+        if (usuarioActual == null) {
+            return usuarios;
+        }
 
         for (Usuario u : usuarios) {
-            if (u != usuarioActual) {
+
+            if (u.getId() != usuarioActual.getId()) {
                 usuariosDisponibles.add(u);
             }
         }
@@ -69,12 +81,13 @@ public class GestorMorosos {
         return usuariosDisponibles;
     }
 
-    public List<Usuario> obtenerUsuariosActivosDisponibles(Usuario usuarioActual) {
-        ArrayList<Usuario> usuariosDisponibles = new ArrayList<>();
+    public List<Usuario> obtenerUsuariosDisponiblesParaEvento(Evento evento) {
+        List<Usuario> usuariosActivos = usuarioDAO.buscarTodosActivos();
+        List<Usuario> usuariosDisponibles = new ArrayList<>();
 
-        for (Usuario u : usuarios) {
-            if (u.isActivo() && u != usuarioActual) {
-                usuariosDisponibles.add(u);
+        for (Usuario usuario : usuariosActivos) {
+            if (!evento.esCreador(usuario) && !evento.tieneParticipante(usuario)) {
+                usuariosDisponibles.add(usuario);
             }
         }
 
@@ -82,23 +95,23 @@ public class GestorMorosos {
     }
 
     public Usuario buscarUsuarioID(int id) throws UnknownUserException {
-        for (Usuario u : usuarios) {
-            if (id == u.getId()) {
-                return u;
-            }
-        }
+       Usuario usuario = usuarioDAO.buscarPorId(id);
 
-        throw new UnknownUserException();
+       if (usuario != null) {
+           return usuario;
+       } else {
+           throw new UnknownUserException();
+       }
     }
 
     public Usuario buscarUsuarioActivoID(int id) throws UnknownUserException {
-        for (Usuario u : usuarios) {
-            if (id == u.getId() && u.isActivo()) {
-                return u;
-            }
-        }
+        Usuario usuario = buscarUsuarioID(id);
 
-        throw new UnknownUserException();
+        if (usuario != null && usuario.isActivo()) {
+            return usuario;
+        } else {
+            throw new UnknownUserException();
+        }
     }
 
     public boolean hayUsuariosActivosDisponibles(Usuario usuarioActual) {

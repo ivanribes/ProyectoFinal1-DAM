@@ -131,7 +131,7 @@ public class Evento {
 
     public boolean tieneParticipante(Usuario usuario) {
         for (ParticipanteEvento participante : participantes) {
-            if (participante.getUsuario() == usuario) {
+            if (participante.getUsuario().getId() == usuario.getId()) {
                 return true;
             }
         }
@@ -140,7 +140,7 @@ public class Evento {
     }
 
     public boolean esCreador(Usuario usuario) {
-        return this.creador == usuario;
+        return usuario != null && creador.getId() == usuario.getId();
     }
 
     public boolean todosLosUsuariosDisponiblesYaParticipan(List<Usuario> usuarios, Usuario usuarioActual) {

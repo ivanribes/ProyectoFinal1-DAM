@@ -16,6 +16,7 @@ import Usuarios.Usuario;
 import Utilidades.Entrada;
 
 import java.io.IOException;
+import java.util.List;
 
 public class ServiciosUsuario {
 
@@ -32,7 +33,11 @@ public class ServiciosUsuario {
 
     //region SELECCIONAR USUARIO
     public Usuario seleccionarUsuario() throws UnknownUserException {
-        mostrarUsuariosDisponibles();
+        List<Usuario> usuarios = gestorMorosos.obtenerUsuariosDisponibles(usuario);
+
+        for (Usuario u: usuarios) {
+            System.out.println("ID -> " +u.getId()+ " - Email -> " +u.getEmail());
+        }
 
         int id = Entrada.leerIntPositivo("Selecciona un ID: ");
 
@@ -47,14 +52,9 @@ public class ServiciosUsuario {
         return gestorMorosos.buscarUsuarioActivoID(id);
     }
 
-    private void mostrarUsuariosDisponibles() {
-        for (Usuario u : gestorMorosos.obtenerUsuariosDisponibles(usuario)) {
-            System.out.println("User_ID: " + u.getId() + " --> " + u.getEmail());
-        }
-    }
 
     private void mostrarUsuariosActivosDisponibles() {
-        for (Usuario u : gestorMorosos.obtenerUsuariosActivosDisponibles(usuario)) {
+        for (Usuario u : gestorMorosos.obtenerUsuariosDisponibles(usuario)) {
             System.out.println("User_ID: " + u.getId() + " --> " + u.getEmail());
         }
     }
@@ -92,7 +92,7 @@ public class ServiciosUsuario {
     //endregion
 
     //region AÑADIR PARTICIPANTES
-    public void anadirParticipantes() {
+    public void aniadirParticipantes() {
         try {
             if (!consultarEventosCreados()) {
                 return;
@@ -105,16 +105,43 @@ public class ServiciosUsuario {
                 return;
             }
 
-            if (evento.todosLosUsuariosDisponiblesYaParticipan(gestorMorosos.getUsuarios(), usuario)) {
-                System.out.println("Todos los usuarios activos disponibles ya participan en este evento.");
-                return;
-            }
-
             boolean seguirAniadiendo;
 
             do {
-                Usuario usuarioAniadir = seleccionarUsuarioActivoParaEvento();
-                seguirAniadiendo = procesarNuevoParticipante(evento, usuarioAniadir);
+                List<Usuario> usuariosDisponibles =
+                        gestorMorosos.obtenerUsuariosDisponiblesParaEvento(evento);
+
+                if (usuariosDisponibles.isEmpty()) {
+                    System.out.println("No hay usuarios disponibles para añadir a este evento.");
+                    return;
+                }
+
+                mostrarUsuariosDisponibles(usuariosDisponibles);
+
+                int idUsuario = Entrada.leerIntPositivo("Selecciona el ID del usuario a añadir: ");
+
+                Usuario usuarioAniadir = buscarUsuarioEnLista(usuariosDisponibles, idUsuario);
+
+                boolean aniadido = evento.aniadirParticipantes(
+                        new ParticipanteEvento(usuarioAniadir, evento));
+
+                if (aniadido) {
+                    System.out.printf("%s se ha añadido a %s 👤✅%n%n",
+                            usuarioAniadir.getNombre(),
+                            evento.getNombre());
+                } else {
+                    System.out.println("No se ha podido añadir el participante.");
+                }
+
+                usuariosDisponibles = gestorMorosos.obtenerUsuariosDisponiblesParaEvento(evento);
+
+                if (usuariosDisponibles.isEmpty()) {
+                    System.out.println("Todos los usuarios disponibles ya participan en este evento.");
+                    return;
+                }
+
+                seguirAniadiendo = Entrada.leerSiNo("¿Desea introducir más participantes? (si-no): ");
+
             } while (seguirAniadiendo);
 
         } catch (UnknownEventException | UnknownUserException e) {
@@ -128,42 +155,38 @@ public class ServiciosUsuario {
             return false;
         }
 
-        if (!gestorMorosos.hayUsuariosActivosDisponibles(usuario)) {
-            System.out.println("No hay usuarios activos disponibles para añadir al evento.");
+        if (gestorMorosos.obtenerUsuariosDisponiblesParaEvento(evento).isEmpty()) {
+            System.out.println("No hay usuarios disponibles para añadir al evento.");
             return false;
         }
 
         return true;
     }
 
-    private boolean procesarNuevoParticipante(Evento evento, Usuario usuarioAniadir) {
-        if (evento.esCreador(usuarioAniadir)) {
-            System.out.println("No puedes añadir al creador como participante.");
-            return Entrada.leerSiNo("Desea intentar añadir otro participante? (si-no): ");
+    private void mostrarUsuariosDisponibles(List<Usuario> usuariosDisponibles) {
+        System.out.println("Usuarios disponibles:");
+
+        for (Usuario usuario : usuariosDisponibles) {
+            System.out.printf("""
+                [ID USUARIO: %d]
+                Nombre: %s
+                Email: %s
+                
+                """,
+                    usuario.getId(),
+                    usuario.getNombre(),
+                    usuario.getEmail());
+        }
+    }
+
+    private Usuario buscarUsuarioEnLista(List<Usuario> usuariosDisponibles, int idUsuario) {
+        for (Usuario usuario : usuariosDisponibles) {
+            if (usuario.getId() == idUsuario) {
+                return usuario;
+            }
         }
 
-        if (evento.tieneParticipante(usuarioAniadir)) {
-            System.out.println("Este usuario ya participa en el evento.");
-            return Entrada.leerSiNo("Desea intentar añadir otro participante? (si-no): ");
-        }
-
-        boolean aniadido = evento.aniadirParticipantes(
-                new ParticipanteEvento(usuarioAniadir, evento));
-
-        if (aniadido) {
-            System.out.printf("%S se ha añadido a %S👤✅%n%n",
-                    usuarioAniadir.getNombre(),
-                    evento.getNombre());
-        } else {
-            System.out.println("No se ha podido añadir el participante.");
-        }
-
-        if (evento.todosLosUsuariosDisponiblesYaParticipan(gestorMorosos.getUsuarios(), usuario)) {
-            System.out.println("Todos los usuarios activos disponibles ya participan en este evento.");
-            return false;
-        }
-
-        return Entrada.leerSiNo("Desea introducir mas participantes? (si-no): ");
+        throw new UnknownUserException();
     }
     //endregion
 

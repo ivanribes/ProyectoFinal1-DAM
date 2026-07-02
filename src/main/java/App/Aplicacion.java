@@ -2,7 +2,7 @@ package App;
 
 import Excepciones.UnknownUserException;
 import Menu.Menu;
-import Prueba.DatosPrueba;
+//import Prueba.DatosPrueba;
 import Usuarios.Usuario;
 import Utilidades.Entrada;
 
@@ -30,7 +30,7 @@ public class Aplicacion {
 
     public void iniciar() {
         cargarUsuarios();
-        DatosPrueba.cargarDatosPrueba(gestorMorosos);
+//        DatosPrueba.cargarDatosPrueba(gestorMorosos);
         ejecutarPrograma();
     }
 
@@ -52,7 +52,8 @@ public class Aplicacion {
 
         switch (Entrada.leerOpcionMenu("Selecciona una opcion: ", 1, 5)) {
             case 1 -> iniciarSesion();
-            case 2 -> System.out.println("Pedir los datos y crear un nuevo usuario");
+            case 2 -> gestorMorosos.insertarUsuario(Entrada.leerNombre("Introduce el nombre de usuario:"),
+                    Entrada.leerNombre("Introduce el correo electronico:"));
             case 3 -> {
                 int dias = Entrada.leerIntPositivo(
                         "Introduce la cantidad de dias que quieres aumentar la fecha: ");
@@ -75,7 +76,7 @@ public class Aplicacion {
 
         switch (Entrada.leerOpcionMenu("Selecciona una opcion: ", 1, 13)) {
             case 1 -> serviciosUsuario.crearEvento();
-            case 2 -> serviciosUsuario.anadirParticipantes();
+            case 2 -> serviciosUsuario.aniadirParticipantes();
             case 3 -> serviciosUsuario.eliminarParticipante();
             case 4 -> serviciosUsuario.consultarEventosCreados();
             case 5 -> serviciosUsuario.consultarEventosDondeParticipo();
@@ -100,10 +101,6 @@ public class Aplicacion {
         } catch (UnknownUserException e) {
             System.out.println(e.getMessage());
         }
-    }
-
-    public void seleccionarUsuario() {
-        this.usuarioActual = serviciosUsuario.seleccionarUsuario();
     }
 
     public void cerrarSesion() {
