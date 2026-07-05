@@ -8,9 +8,7 @@ import java.time.temporal.ChronoUnit;
 public class Pago implements Penalizable {
 
     private static final double PENALIZACION = 0.5;
-    private static int ID_PAGO = 0;
 
-    private final int id;
     private double importeBase;
     private double penalizacionAplicada;
     private double importeFinal;
@@ -18,16 +16,21 @@ public class Pago implements Penalizable {
     private EstadoPago estadoPago;
 
     public Pago(double importeBase) {
-        this.id = ++ID_PAGO;
         this.importeBase = importeBase;
         this.estadoPago = EstadoPago.PENDIENTE;
         setImporteFinal();
     }
 
-    //region GETTERS Y SETTERS
-    public int getId() {
-        return id;
+    public Pago(double importeBase, double penalizacionAplicada, double importeFinal, LocalDate fechaPago, EstadoPago estadoPago) {
+        this.importeBase = importeBase;
+        this.penalizacionAplicada = penalizacionAplicada;
+        this.importeFinal = importeFinal;
+        this.fechaPago = fechaPago;
+        this.estadoPago = estadoPago;
     }
+
+    //region GETTERS Y SETTERS
+
 
     public double getImporteBase() {
         return importeBase;

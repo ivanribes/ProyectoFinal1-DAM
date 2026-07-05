@@ -136,8 +136,8 @@ public class GestorFicheros {
                 case "USUARIO" -> registrarUsuario(partes[1], partes[2]);
                 case "EVENTO" -> registrarEvento(
                         partes[1],
-                        castToDouble(partes[3]),
-                        castToInt(partes[4]));
+                        castToDouble(partes[2]),
+                        castToInt(partes[3]));
                 case "PARTICIPANTE" -> registrarParticipante(
                         castToInt(partes[5]),
                         castToInt(partes[6]),
