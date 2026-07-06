@@ -3,9 +3,7 @@ package Eventos;
 import Enums.EstadoPago;
 import Usuarios.ParticipanteEvento;
 import Usuarios.Usuario;
-
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -20,7 +18,6 @@ public class Evento {
     private final LocalDate fechaCreacion;
     private final LocalDate fechaPagoLimite;
     private final Usuario creador;
-    private final ArrayList<ParticipanteEvento> participantes;
 
     public Evento(String nombre, double importeTotal, Usuario creador) {
         this.id = ++idActual;
@@ -30,7 +27,6 @@ public class Evento {
         this.fechaPagoLimite = fechaCreacion.plusDays(2);
         this.creador = creador;
         this.descripcion = null;
-        this.participantes = new ArrayList<>();
     }
 
     public Evento(int id, String nombre, double importeTotal, Usuario creador,
@@ -47,7 +43,6 @@ public class Evento {
         this.fechaPagoLimite = fechaPagoLimite;
         this.creador = creador;
         this.descripcion = descripcion;
-        this.participantes = new ArrayList<>();
     }
 
     //region GETTERS
@@ -80,11 +75,14 @@ public class Evento {
     }
 
     public int getParticipantes() {
+
+        //TODO consulta que devuelva un count + 1
+
         return participantes.size() + 1;
     }
 
     public List<ParticipanteEvento> getListParticipantes() {
-        return Collections.unmodifiableList(participantes);
+        return //TODO consulta que devuelva lista;
     }
     //endregion
 
@@ -98,17 +96,7 @@ public class Evento {
             return false;
         }
 
-        participantes.add(participante);
-        recalcularImporte();
-        return true;
-    }
-
-    public boolean importarParticipante(ParticipanteEvento participante) {
-        if (participanteInvalido(participante)) {
-            return false;
-        }
-
-        participantes.add(participante);
+        //TODO participantesevento.insertar
         recalcularImporte();
         return true;
     }
@@ -120,34 +108,20 @@ public class Evento {
 
         ParticipanteEvento participante = buscarParticipantePorId(idParticipante);
 
-        if (participante == null) {
-            return false;
-        }
-
-        boolean eliminado = participantes.remove(participante);
-
-        if (eliminado) {
-            recalcularImporte();
-        }
-
-        return eliminado;
+        //TODO delete en la tabla participantes + recalcular
     }
 
     public ParticipanteEvento buscarParticipantePorId(int idParticipante) {
-        for (ParticipanteEvento p : participantes) {
-            if (p.getIdParticipante() == idParticipante) {
-                return p;
-            }
-        }
-
-        return null;
+        //todo buscar en bd
     }
 
     public boolean tieneParticipantes() {
-        return !participantes.isEmpty();
+        //TODO mirar si tiene algun participante
     }
 
     public boolean tieneParticipante(Usuario usuario) {
+
+        //TODO buscar si el usuario es participante
         if (usuario == null) {
             return false;
         }
@@ -172,31 +146,17 @@ public class Evento {
                 tieneParticipante(participante.getUsuario());
     }
 
-    private void recalcularImporte() {
+    public double recalcularImporte() {
+        //TODO update en la tabla de participantes
         double importeParticipante = importeTotal / getParticipantes();
 
-        for (ParticipanteEvento p : participantes) {
-            p.setImporteDebe(importeParticipante);
-        }
+        return importeParticipante;
     }
     //endregion
 
     //region PAGOS
     public boolean tienePagosIniciados() {
-        for (ParticipanteEvento participante : participantes) {
-            if (participante.getPago() == null) {
-                continue;
-            }
-
-            EstadoPago estado = participante.getPago().getEstadoPago();
-
-            if (estado == EstadoPago.PAGADO ||
-                    estado == EstadoPago.PENDIENTE_CONFIRMAR) {
-                return true;
-            }
-        }
-
-        return false;
+        //todo refactor buscando en la bd
     }
     //endregion
 }

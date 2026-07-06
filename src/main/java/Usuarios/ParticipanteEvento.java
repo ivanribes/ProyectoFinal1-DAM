@@ -16,6 +16,11 @@ public class ParticipanteEvento {
         this.evento = evento;
     }
 
+    public ParticipanteEvento (Usuario usuario, Evento evento) {
+        this.usuario = usuario;
+        this.evento = evento;
+    }
+
     public ParticipanteEvento(int idParticipante, Usuario usuario, Evento evento, Pago pago) {
         this.idParticipante = idParticipante;
         this.usuario = usuario;

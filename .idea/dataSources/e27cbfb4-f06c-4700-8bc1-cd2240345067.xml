@@ -1469,15 +1469,87 @@ false posix/Zulu
       <ObjectId>5</ObjectId>
       <OwnerName>postgres</OwnerName>
     </database>
-    <role id="3" parent="1" name="anon">
-      <Config>statement_timeout=3s</Config>
-      <ObjectId>16484</ObjectId>
+    <role id="3" parent="1" name="pg_database_owner">
+      <ObjectId>6171</ObjectId>
     </role>
-    <role id="4" parent="1" name="authenticated">
+    <role id="4" parent="1" name="pg_read_all_data">
+      <ObjectId>6181</ObjectId>
+    </role>
+    <role id="5" parent="1" name="pg_write_all_data">
+      <ObjectId>6182</ObjectId>
+    </role>
+    <role id="6" parent="1" name="pg_monitor">
+      <ObjectId>3373</ObjectId>
+      <RoleGrants>3374
+3375
+3377</RoleGrants>
+    </role>
+    <role id="7" parent="1" name="pg_read_all_settings">
+      <ObjectId>3374</ObjectId>
+    </role>
+    <role id="8" parent="1" name="pg_read_all_stats">
+      <ObjectId>3375</ObjectId>
+    </role>
+    <role id="9" parent="1" name="pg_stat_scan_tables">
+      <ObjectId>3377</ObjectId>
+    </role>
+    <role id="10" parent="1" name="pg_read_server_files">
+      <ObjectId>4569</ObjectId>
+    </role>
+    <role id="11" parent="1" name="pg_write_server_files">
+      <ObjectId>4570</ObjectId>
+    </role>
+    <role id="12" parent="1" name="pg_execute_server_program">
+      <ObjectId>4571</ObjectId>
+    </role>
+    <role id="13" parent="1" name="pg_signal_backend">
+      <ObjectId>4200</ObjectId>
+    </role>
+    <role id="14" parent="1" name="pg_checkpoint">
+      <ObjectId>4544</ObjectId>
+    </role>
+    <role id="15" parent="1" name="pg_maintain">
+      <ObjectId>6337</ObjectId>
+    </role>
+    <role id="16" parent="1" name="pg_use_reserved_connections">
+      <ObjectId>4550</ObjectId>
+    </role>
+    <role id="17" parent="1" name="pg_create_subscription">
+      <ObjectId>6304</ObjectId>
+    </role>
+    <role id="18" parent="1" name="dashboard_user">
+      <CreateDb>1</CreateDb>
+      <CreateRole>1</CreateRole>
+      <ObjectId>16555</ObjectId>
+      <Replication>1</Replication>
+    </role>
+    <role id="19" parent="1" name="authenticated">
       <Config>statement_timeout=8s</Config>
       <ObjectId>16485</ObjectId>
     </role>
-    <role id="5" parent="1" name="authenticator">
+    <role id="20" parent="1" name="anon">
+      <Config>statement_timeout=3s</Config>
+      <ObjectId>16484</ObjectId>
+    </role>
+    <role id="21" parent="1" name="service_role">
+      <BypassRls>1</BypassRls>
+      <ObjectId>16486</ObjectId>
+    </role>
+    <role id="22" parent="1" name="supabase_privileged_role">
+      <ObjectId>16662</ObjectId>
+    </role>
+    <role id="23" parent="1" name="supabase_admin">
+      <BypassRls>1</BypassRls>
+      <CanLogin>1</CanLogin>
+      <Config>search_path=&quot;$user&quot;, public, auth, extensions
+log_statement=none</Config>
+      <CreateDb>1</CreateDb>
+      <CreateRole>1</CreateRole>
+      <ObjectId>10</ObjectId>
+      <Replication>1</Replication>
+      <SuperRole>1</SuperRole>
+    </role>
+    <role id="24" parent="1" name="authenticator">
       <CanLogin>1</CanLogin>
       <Config>session_preload_libraries=supautils, safeupdate
 statement_timeout=8s
@@ -1488,65 +1560,55 @@ lock_timeout=8s</Config>
 16485
 16486</RoleGrants>
     </role>
-    <role id="6" parent="1" name="dashboard_user">
-      <CreateDb>1</CreateDb>
+    <role id="25" parent="1" name="supabase_auth_admin">
+      <CanLogin>1</CanLogin>
+      <Config>search_path=auth
+idle_in_transaction_session_timeout=60000
+log_statement=none</Config>
       <CreateRole>1</CreateRole>
-      <ObjectId>16555</ObjectId>
+      <Inherit>0</Inherit>
+      <ObjectId>16545</ObjectId>
+    </role>
+    <role id="26" parent="1" name="supabase_storage_admin">
+      <CanLogin>1</CanLogin>
+      <Config>search_path=storage
+log_statement=none</Config>
+      <CreateRole>1</CreateRole>
+      <Inherit>0</Inherit>
+      <ObjectId>16547</ObjectId>
+      <RoleGrants>16487</RoleGrants>
+    </role>
+    <role id="27" parent="1" name="supabase_replication_admin">
+      <CanLogin>1</CanLogin>
+      <ObjectId>16431</ObjectId>
       <Replication>1</Replication>
     </role>
-    <role id="7" parent="1" name="pg_checkpoint">
-      <ObjectId>4544</ObjectId>
+    <role id="28" parent="1" name="supabase_read_only_user">
+      <BypassRls>1</BypassRls>
+      <CanLogin>1</CanLogin>
+      <Config>default_transaction_read_only=on</Config>
+      <ObjectId>16434</ObjectId>
+      <RoleGrants>3373
+6181</RoleGrants>
     </role>
-    <role id="8" parent="1" name="pg_create_subscription">
-      <ObjectId>6304</ObjectId>
+    <role id="29" parent="1" name="supabase_etl_admin">
+      <BypassRls>1</BypassRls>
+      <CanLogin>1</CanLogin>
+      <ObjectId>16432</ObjectId>
+      <Replication>1</Replication>
+      <RoleGrants>16662
+3373
+6181</RoleGrants>
     </role>
-    <role id="9" parent="1" name="pg_database_owner">
-      <ObjectId>6171</ObjectId>
-    </role>
-    <role id="10" parent="1" name="pg_execute_server_program">
-      <ObjectId>4571</ObjectId>
-    </role>
-    <role id="11" parent="1" name="pg_maintain">
-      <ObjectId>6337</ObjectId>
-    </role>
-    <role id="12" parent="1" name="pg_monitor">
-      <ObjectId>3373</ObjectId>
-      <RoleGrants>3374
-3375
-3377</RoleGrants>
-    </role>
-    <role id="13" parent="1" name="pg_read_all_data">
-      <ObjectId>6181</ObjectId>
-    </role>
-    <role id="14" parent="1" name="pg_read_all_settings">
-      <ObjectId>3374</ObjectId>
-    </role>
-    <role id="15" parent="1" name="pg_read_all_stats">
-      <ObjectId>3375</ObjectId>
-    </role>
-    <role id="16" parent="1" name="pg_read_server_files">
-      <ObjectId>4569</ObjectId>
-    </role>
-    <role id="17" parent="1" name="pg_signal_backend">
-      <ObjectId>4200</ObjectId>
-    </role>
-    <role id="18" parent="1" name="pg_stat_scan_tables">
-      <ObjectId>3377</ObjectId>
-    </role>
-    <role id="19" parent="1" name="pg_use_reserved_connections">
-      <ObjectId>4550</ObjectId>
-    </role>
-    <role id="20" parent="1" name="pg_write_all_data">
-      <ObjectId>6182</ObjectId>
-    </role>
-    <role id="21" parent="1" name="pg_write_server_files">
-      <ObjectId>4570</ObjectId>
-    </role>
-    <role id="22" parent="1" name="pgbouncer">
+    <role id="30" parent="1" name="pgbouncer">
       <CanLogin>1</CanLogin>
       <ObjectId>16389</ObjectId>
     </role>
-    <role id="23" parent="1" name="postgres">
+    <role id="31" parent="1" name="supabase_realtime_admin">
+      <Inherit>0</Inherit>
+      <ObjectId>17502</ObjectId>
+    </role>
+    <role id="32" parent="1" name="postgres">
       <BypassRls>1</BypassRls>
       <CanLogin>1</CanLogin>
       <Config>search_path=&quot;\\$user&quot;, public, extensions</Config>
@@ -1564,68 +1626,6 @@ lock_timeout=8s</Config>
 4200!
 6181!
 6304!</RoleGrants>
-    </role>
-    <role id="24" parent="1" name="service_role">
-      <BypassRls>1</BypassRls>
-      <ObjectId>16486</ObjectId>
-    </role>
-    <role id="25" parent="1" name="supabase_admin">
-      <BypassRls>1</BypassRls>
-      <CanLogin>1</CanLogin>
-      <Config>search_path=&quot;$user&quot;, public, auth, extensions
-log_statement=none</Config>
-      <CreateDb>1</CreateDb>
-      <CreateRole>1</CreateRole>
-      <ObjectId>10</ObjectId>
-      <Replication>1</Replication>
-      <SuperRole>1</SuperRole>
-    </role>
-    <role id="26" parent="1" name="supabase_auth_admin">
-      <CanLogin>1</CanLogin>
-      <Config>search_path=auth
-idle_in_transaction_session_timeout=60000
-log_statement=none</Config>
-      <CreateRole>1</CreateRole>
-      <Inherit>0</Inherit>
-      <ObjectId>16545</ObjectId>
-    </role>
-    <role id="27" parent="1" name="supabase_etl_admin">
-      <BypassRls>1</BypassRls>
-      <CanLogin>1</CanLogin>
-      <ObjectId>16432</ObjectId>
-      <Replication>1</Replication>
-      <RoleGrants>16662
-3373
-6181</RoleGrants>
-    </role>
-    <role id="28" parent="1" name="supabase_privileged_role">
-      <ObjectId>16662</ObjectId>
-    </role>
-    <role id="29" parent="1" name="supabase_read_only_user">
-      <BypassRls>1</BypassRls>
-      <CanLogin>1</CanLogin>
-      <Config>default_transaction_read_only=on</Config>
-      <ObjectId>16434</ObjectId>
-      <RoleGrants>3373
-6181</RoleGrants>
-    </role>
-    <role id="30" parent="1" name="supabase_realtime_admin">
-      <Inherit>0</Inherit>
-      <ObjectId>17502</ObjectId>
-    </role>
-    <role id="31" parent="1" name="supabase_replication_admin">
-      <CanLogin>1</CanLogin>
-      <ObjectId>16431</ObjectId>
-      <Replication>1</Replication>
-    </role>
-    <role id="32" parent="1" name="supabase_storage_admin">
-      <CanLogin>1</CanLogin>
-      <Config>search_path=storage
-log_statement=none</Config>
-      <CreateRole>1</CreateRole>
-      <Inherit>0</Inherit>
-      <ObjectId>16547</ObjectId>
-      <RoleGrants>16487</RoleGrants>
     </role>
     <tablespace id="33" parent="1" name="pg_default">
       <ObjectId>1663</ObjectId>
@@ -5268,7 +5268,7 @@ log_statement=none</Config>
     <table id="301" parent="287" name="participantes_evento">
       <DetailsLevel>2</DetailsLevel>
       <ObjectId>17584</ObjectId>
-      <StateNumber>1249</StateNumber>
+      <StateNumber>1363</StateNumber>
       <AccessMethodId>2</AccessMethodId>
       <OwnerName>postgres</OwnerName>
     </table>
@@ -5448,14 +5448,20 @@ fecha_creacion</ColNames>
       <StoredType>varchar(30)|0s</StoredType>
       <TypeId>1043</TypeId>
     </column>
-    <foreign-key id="327" parent="301" name="fk_participante_usuario">
+    <column id="327" parent="301" name="dias_retraso">
+      <Position>9</Position>
+      <StateNumber>1363</StateNumber>
+      <StoredType>integer|0s</StoredType>
+      <TypeId>23</TypeId>
+    </column>
+    <foreign-key id="328" parent="301" name="fk_participante_usuario">
       <ColNames>usuario_id</ColNames>
       <ObjectId>17597</ObjectId>
       <StateNumber>1249</StateNumber>
       <RefKeyColPositions>1</RefKeyColPositions>
       <RefTableId>17562</RefTableId>
     </foreign-key>
-    <foreign-key id="328" parent="301" name="fk_participante_evento">
+    <foreign-key id="329" parent="301" name="fk_participante_evento">
       <ColNames>evento_id</ColNames>
       <ObjectId>17602</ObjectId>
       <OnDelete>cascade</OnDelete>
@@ -5463,7 +5469,7 @@ fecha_creacion</ColNames>
       <RefKeyColPositions>1</RefKeyColPositions>
       <RefTableId>17571</RefTableId>
     </foreign-key>
-    <index id="329" parent="301" name="participantes_evento_pkey">
+    <index id="330" parent="301" name="participantes_evento_pkey">
       <ColNames>id</ColNames>
       <NameSurrogate>1</NameSurrogate>
       <ObjectId>17593</ObjectId>
@@ -5472,7 +5478,7 @@ fecha_creacion</ColNames>
       <Unique>1</Unique>
       <AccessMethodId>403</AccessMethodId>
     </index>
-    <index id="330" parent="301" name="uq_usuario_evento">
+    <index id="331" parent="301" name="uq_usuario_evento">
       <ColNames>usuario_id
 evento_id</ColNames>
       <ObjectId>17595</ObjectId>
@@ -5480,19 +5486,19 @@ evento_id</ColNames>
       <Unique>1</Unique>
       <AccessMethodId>403</AccessMethodId>
     </index>
-    <index id="331" parent="301" name="idx_participantes_usuario">
+    <index id="332" parent="301" name="idx_participantes_usuario">
       <ColNames>usuario_id</ColNames>
       <ObjectId>17608</ObjectId>
       <StateNumber>1249</StateNumber>
       <AccessMethodId>403</AccessMethodId>
     </index>
-    <index id="332" parent="301" name="idx_participantes_evento">
+    <index id="333" parent="301" name="idx_participantes_evento">
       <ColNames>evento_id</ColNames>
       <ObjectId>17609</ObjectId>
       <StateNumber>1249</StateNumber>
       <AccessMethodId>403</AccessMethodId>
     </index>
-    <index id="333" parent="301" name="idx_participantes_estado_pago">
+    <index id="334" parent="301" name="idx_participantes_estado_pago">
       <ColNames>estado_pago</ColNames>
       <ObjectId>17610</ObjectId>
       <StateNumber>1249</StateNumber>
@@ -5501,19 +5507,19 @@ evento_id</ColNames>
       <CollationIds>100</CollationIds>
       <CollationParentNames>pg_catalog</CollationParentNames>
     </index>
-    <key id="334" parent="301" name="participantes_evento_pkey">
+    <key id="335" parent="301" name="participantes_evento_pkey">
       <NameSurrogate>1</NameSurrogate>
       <ObjectId>17594</ObjectId>
       <Primary>1</Primary>
       <StateNumber>1249</StateNumber>
       <UnderlyingIndexId>17593</UnderlyingIndexId>
     </key>
-    <key id="335" parent="301" name="uq_usuario_evento">
+    <key id="336" parent="301" name="uq_usuario_evento">
       <ObjectId>17596</ObjectId>
       <StateNumber>1249</StateNumber>
       <UnderlyingIndexId>17595</UnderlyingIndexId>
     </key>
-    <column id="336" parent="302" name="id">
+    <column id="337" parent="302" name="id">
       <GeneratedKind>identity-by-default</GeneratedKind>
       <NotNull>1</NotNull>
       <Position>1</Position>
@@ -5522,21 +5528,21 @@ evento_id</ColNames>
       <SequenceId>17561</SequenceId>
       <TypeId>23</TypeId>
     </column>
-    <column id="337" parent="302" name="nombre">
+    <column id="338" parent="302" name="nombre">
       <NotNull>1</NotNull>
       <Position>2</Position>
       <StateNumber>1249</StateNumber>
       <StoredType>varchar(50)|0s</StoredType>
       <TypeId>1043</TypeId>
     </column>
-    <column id="338" parent="302" name="email">
+    <column id="339" parent="302" name="email">
       <NotNull>1</NotNull>
       <Position>3</Position>
       <StateNumber>1249</StateNumber>
       <StoredType>varchar(50)|0s</StoredType>
       <TypeId>1043</TypeId>
     </column>
-    <column id="339" parent="302" name="activo">
+    <column id="340" parent="302" name="activo">
       <DefaultExpression>true</DefaultExpression>
       <NotNull>1</NotNull>
       <Position>4</Position>
@@ -5544,7 +5550,7 @@ evento_id</ColNames>
       <StoredType>boolean|0s</StoredType>
       <TypeId>16</TypeId>
     </column>
-    <index id="340" parent="302" name="usuarios_pkey">
+    <index id="341" parent="302" name="usuarios_pkey">
       <ColNames>id</ColNames>
       <NameSurrogate>1</NameSurrogate>
       <ObjectId>17566</ObjectId>
@@ -5553,7 +5559,7 @@ evento_id</ColNames>
       <Unique>1</Unique>
       <AccessMethodId>403</AccessMethodId>
     </index>
-    <index id="341" parent="302" name="usuarios_email_key">
+    <index id="342" parent="302" name="usuarios_email_key">
       <ColNames>email</ColNames>
       <NameSurrogate>1</NameSurrogate>
       <ObjectId>17568</ObjectId>
@@ -5564,14 +5570,14 @@ evento_id</ColNames>
       <CollationIds>100</CollationIds>
       <CollationParentNames>pg_catalog</CollationParentNames>
     </index>
-    <key id="342" parent="302" name="usuarios_pkey">
+    <key id="343" parent="302" name="usuarios_pkey">
       <NameSurrogate>1</NameSurrogate>
       <ObjectId>17567</ObjectId>
       <Primary>1</Primary>
       <StateNumber>1249</StateNumber>
       <UnderlyingIndexId>17566</UnderlyingIndexId>
     </key>
-    <key id="343" parent="302" name="usuarios_email_key">
+    <key id="344" parent="302" name="usuarios_email_key">
       <NameSurrogate>1</NameSurrogate>
       <ObjectId>17569</ObjectId>
       <StateNumber>1249</StateNumber>

@@ -2,19 +2,11 @@ package Usuarios;
 
 public class Usuario {
 
-    private static int idActual;
-
     private final int id;
     private String nombre;
-    private String email;
+    private final String email;
     private boolean activo;
 
-    public Usuario(String nombre, String email) {
-        this.id = ++idActual;
-        this.nombre = nombre;
-        this.email = email;
-        this.activo = true;
-    }
 
     public Usuario (int id, String nombre, String email, boolean activo) {
         this.id = id;
@@ -37,10 +29,6 @@ public class Usuario {
 
     public String getEmail() {
         return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
     }
 
     public boolean isActivo() {

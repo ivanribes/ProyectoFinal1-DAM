@@ -214,31 +214,11 @@ public class GestorMorosos {
     //endregion
 
     //region PAGOS
-    public Pago buscarPago(Evento evento, int idPago) throws UnknownPaymentException {
-        for (ParticipanteEvento p : evento.getListParticipantes()) {
-            if (p.getPago().getId() == idPago) {
-                return p.getPago();
-            }
-        }
-
-        throw new UnknownPaymentException();
-    }
-
-    public Pago buscarPago(int idPago) throws UnknownPaymentException {
-        for (Evento e : eventoDAO.buscarTodos()) {
-            for (ParticipanteEvento p : e.getListParticipantes()) {
-                if (p.getPago().getId() == idPago) {
-                    return p.getPago();
-                }
-            }
-        }
-
-        throw new UnknownPaymentException();
-    }
 
     public Pago buscarPagoPendienteUsuario(int idPago, Usuario usuario)
             throws UnknownPaymentException {
 
+        //TODO usar dao (creo)
         for (Evento evento : eventoDAO.buscarTodos()) {
             for (ParticipanteEvento participante : evento.getListParticipantes()) {
                 Pago pago = participante.getPago();
@@ -257,7 +237,7 @@ public class GestorMorosos {
 
     public Pago buscarPagoPendienteConfirmar(Evento evento, int idPago)
             throws UnknownPaymentException {
-
+        //TODO usar dao (creo)
         for (ParticipanteEvento participante : evento.getListParticipantes()) {
             Pago pago = participante.getPago();
 
