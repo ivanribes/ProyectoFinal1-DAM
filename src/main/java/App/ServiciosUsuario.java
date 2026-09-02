@@ -14,7 +14,6 @@ import Rankings.RankingPenalizacion;
 import Usuarios.ParticipanteEvento;
 import Usuarios.Usuario;
 import Utilidades.Entrada;
-
 import java.io.IOException;
 import java.util.List;
 

@@ -91,7 +91,7 @@ public class ParticipantesEventoDAO {
              PreparedStatement ps = connection.prepareStatement(sql)) {
 
             ps.setInt(1, evento.getId());
-            ps.setString(2, estadoPago.toString());
+            ps.setString(2, estadoPago.name());
 
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
