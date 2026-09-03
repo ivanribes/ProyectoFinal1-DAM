@@ -1,6 +1,7 @@
 package App;
 
 import Bd.DAO.EventoDAO;
+import Bd.DAO.ParticipantesEventoDAO;
 import Bd.DAO.UsuarioDAO;
 import Enums.EstadoPago;
 import Eventos.Evento;
@@ -22,6 +23,7 @@ public class GestorMorosos {
     private Ranking ranking;
     private final UsuarioDAO usuarioDAO;
     private final EventoDAO eventoDAO;
+    private final ParticipantesEventoDAO participantesEventoDAO;
 
     // Para pruebas de penalización
     private LocalDate fechaModificada;
@@ -29,6 +31,7 @@ public class GestorMorosos {
     public GestorMorosos() {
         this.usuarioDAO = new UsuarioDAO();
         this.eventoDAO = new EventoDAO();
+        this.participantesEventoDAO = new ParticipantesEventoDAO(usuarioDAO, eventoDAO);
         this.usuarios = new ArrayList<>();
         this.fechaModificada = LocalDate.now();
     }
@@ -91,7 +94,7 @@ public class GestorMorosos {
             return false;
         }
 
-        if (evento.tieneParticipante(usuario)) {
+        if (evento.usuarioEsParticipante(usuario)) {
             return false;
         }
 
@@ -122,7 +125,7 @@ public class GestorMorosos {
         List<Usuario> usuariosDisponibles = new ArrayList<>();
 
         for (Usuario usuario : usuariosActivos) {
-            if (!evento.esCreador(usuario) && !evento.tieneParticipante(usuario)) {
+            if (!evento.esCreador(usuario) && !evento.usuarioEsParticipante(usuario)) {
                 usuariosDisponibles.add(usuario);
             }
         }
@@ -211,6 +214,37 @@ public class GestorMorosos {
 
         return eventoDAO.buscarPorCreador(usuario.getId());
     }
+    //endregion
+
+    //region PARTICIPANTE EVENTO
+
+    public boolean sePuedeModificarParticipantes(Evento evento) {
+
+        List<ParticipanteEvento> listaPendientes = participantesEventoDAO.buscarPorEstadoPago(evento,
+                EstadoPago.PENDIENTE);
+        List<ParticipanteEvento> listaTodosParticipantes = participantesEventoDAO.buscarTodos(evento);
+
+        return listaPendientes.size() == listaTodosParticipantes.size();
+
+    }
+
+    public boolean agregarParticipante(Usuario usuario, Evento evento) {
+
+        return participantesEventoDAO.insertar(usuario, evento);
+
+    }
+
+    public boolean eliminarParticipante(Usuario usuario, Evento evento) {
+
+        return participantesEventoDAO.eliminar(usuario, evento);
+
+    }
+
+    public List<ParticipanteEvento> obtenerParticipantesDeEvento(Evento evento) {
+
+        return participantesEventoDAO.buscarTodos(evento);
+    }
+
     //endregion
 
     //region PAGOS

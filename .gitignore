@@ -41,3 +41,7 @@ build/
 .env
 Ficheros
 claude.md
+
+.idea/dataSources/
+.idea/dataSources.xml
+.idea/dataSources.local.xml

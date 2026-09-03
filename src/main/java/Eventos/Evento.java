@@ -1,10 +1,8 @@
 package Eventos;
 
-import Enums.EstadoPago;
 import Usuarios.ParticipanteEvento;
 import Usuarios.Usuario;
 import java.time.LocalDate;
-import java.util.Collections;
 import java.util.List;
 
 public class Evento {
@@ -27,11 +25,6 @@ public class Evento {
         this.fechaPagoLimite = fechaCreacion.plusDays(2);
         this.creador = creador;
         this.descripcion = null;
-    }
-
-    public Evento(int id, String nombre, double importeTotal, Usuario creador,
-                  LocalDate fechaCreacion, LocalDate fechaPagoLimite) {
-        this(id, nombre, importeTotal, creador, fechaCreacion, fechaPagoLimite, null);
     }
 
     public Evento(int id, String nombre, double importeTotal, Usuario creador,
@@ -76,9 +69,9 @@ public class Evento {
 
     public int getParticipantes() {
 
-        //TODO consulta que devuelva un count + 1
 
-        return participantes.size() + 1;
+
+        return
     }
 
     public List<ParticipanteEvento> getListParticipantes() {
@@ -119,7 +112,7 @@ public class Evento {
         //TODO mirar si tiene algun participante
     }
 
-    public boolean tieneParticipante(Usuario usuario) {
+    public boolean usuarioEsParticipante(Usuario usuario) {
 
         //TODO buscar si el usuario es participante
         if (usuario == null) {
@@ -143,7 +136,7 @@ public class Evento {
         return participante == null ||
                 participante.getUsuario() == null ||
                 esCreador(participante.getUsuario()) ||
-                tieneParticipante(participante.getUsuario());
+                usuarioEsParticipante(participante.getUsuario());
     }
 
     public double recalcularImporte() {
