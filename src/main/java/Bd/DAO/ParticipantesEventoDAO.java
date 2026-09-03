@@ -49,7 +49,7 @@ public class ParticipantesEventoDAO {
         return new Pago(importeBase, penalizacion, importeFinal, fechaPago, estadoPago);
     }
 
-    public List<ParticipanteEvento> buscarTodos(Evento evento) {
+    public List<ParticipanteEvento> buscarTodos(int idEvento) {
         List<ParticipanteEvento> participantesEvento = new ArrayList<>();
 
         String sql = """
@@ -62,7 +62,7 @@ public class ParticipantesEventoDAO {
         try (Connection connection = ConexionBD.getConnection();
              PreparedStatement ps = connection.prepareStatement(sql)) {
 
-            ps.setInt(1, evento.getId());
+            ps.setInt(1, idEvento);
 
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
@@ -77,7 +77,7 @@ public class ParticipantesEventoDAO {
         return participantesEvento;
     }
 
-    public List<ParticipanteEvento> buscarPorEstadoPago(Evento evento, EstadoPago estadoPago) {
+    public List<ParticipanteEvento> buscarPorEstadoPago(int idEvento, EstadoPago estadoPago) {
         List<ParticipanteEvento> participantesEvento = new ArrayList<>();
 
         String sql = """
@@ -90,7 +90,7 @@ public class ParticipantesEventoDAO {
         try (Connection connection = ConexionBD.getConnection();
              PreparedStatement ps = connection.prepareStatement(sql)) {
 
-            ps.setInt(1, evento.getId());
+            ps.setInt(1, idEvento);
             ps.setString(2, estadoPago.name());
 
             try (ResultSet rs = ps.executeQuery()) {
@@ -192,7 +192,6 @@ public class ParticipantesEventoDAO {
             int filas = ps.executeUpdate();
 
             if (filas > 0) {
-                actualizarImportes(evento);
                 return true;
             }
 
@@ -228,7 +227,7 @@ public class ParticipantesEventoDAO {
         return false;
     }
 
-    private void actualizarImportes(Evento evento) {
+    public void actualizarImportes(Evento evento) {
 
         String sql = """
                 UPDATE participantes_evento

@@ -1,13 +1,12 @@
 package Eventos;
 
+import App.GestorMorosos;
 import Usuarios.ParticipanteEvento;
 import Usuarios.Usuario;
 import java.time.LocalDate;
 import java.util.List;
 
 public class Evento {
-
-    private static int idActual;
 
     private final int id;
     private String nombre;
@@ -17,8 +16,8 @@ public class Evento {
     private final LocalDate fechaPagoLimite;
     private final Usuario creador;
 
-    public Evento(String nombre, double importeTotal, Usuario creador) {
-        this.id = ++idActual;
+    public Evento(int id, String nombre, double importeTotal, Usuario creador) {
+        this.id = id;
         this.nombre = nombre;
         this.importeTotal = importeTotal;
         this.fechaCreacion = LocalDate.now();
@@ -67,60 +66,62 @@ public class Evento {
         return creador;
     }
 
-    public int getParticipantes() {
+    public int getParticipantes(GestorMorosos gestorMorosos) {
 
-
-
-        return
+        return gestorMorosos.obtenerParticipantesDeEvento(id).size() + 1;
     }
 
-    public List<ParticipanteEvento> getListParticipantes() {
-        return //TODO consulta que devuelva lista;
+    public List<ParticipanteEvento> getListParticipantes(GestorMorosos gestorMorosos) {
+        return gestorMorosos.obtenerParticipantesDeEvento(id);
     }
     //endregion
 
     //region PARTICIPANTES
-    public boolean aniadirParticipantes(ParticipanteEvento participante) {
-        if (participanteInvalido(participante)) {
+    public boolean aniadirParticipantes(Usuario usuario, GestorMorosos gestorMorosos) {
+
+        if (esCreador(usuario)) {
+            System.out.println("No puedes añadir al creador como participante!");
             return false;
         }
 
-        if (tienePagosIniciados()) {
+        if (!gestorMorosos.sePuedeModificarParticipantes(id)) {
             return false;
         }
 
-        //TODO participantesevento.insertar
-        recalcularImporte();
+        if (usuarioEsParticipante(usuario, gestorMorosos)) {
+            return false;
+        }
+
+        gestorMorosos.aniadirParticipanteAEvento(this , usuario);
+
+        actualizarImportesParticipantes(gestorMorosos);
         return true;
     }
 
-    public boolean eliminarParticipante(int idParticipante) {
-        if (tienePagosIniciados()) {
+    public boolean eliminarParticipante(Usuario usuarioAEliminar, GestorMorosos gestorMorosos) {
+        if (!tieneParticipantes(gestorMorosos)) {
+            System.out.println("No hay participantes para eliminar");
             return false;
         }
 
-        ParticipanteEvento participante = buscarParticipantePorId(idParticipante);
-
-        //TODO delete en la tabla participantes + recalcular
-    }
-
-    public ParticipanteEvento buscarParticipantePorId(int idParticipante) {
-        //todo buscar en bd
-    }
-
-    public boolean tieneParticipantes() {
-        //TODO mirar si tiene algun participante
-    }
-
-    public boolean usuarioEsParticipante(Usuario usuario) {
-
-        //TODO buscar si el usuario es participante
-        if (usuario == null) {
+        if (!gestorMorosos.sePuedeModificarParticipantes(id)) {
+            System.out.println("No se puede modificar la lista, hay pagos iniciados");
             return false;
         }
 
-        for (ParticipanteEvento participante : participantes) {
-            if (participante.getUsuario().getId() == usuario.getId()) {
+        gestorMorosos.eliminarParticipante(usuarioAEliminar, this);
+        actualizarImportesParticipantes(gestorMorosos);
+        return true;
+    }
+
+    public boolean tieneParticipantes(GestorMorosos gestorMorosos) {
+        return getParticipantes(gestorMorosos) > 1;
+    }
+
+    public boolean usuarioEsParticipante(Usuario usuario, GestorMorosos gestorMorosos) {
+
+        for (ParticipanteEvento p : gestorMorosos.obtenerParticipantesDeEvento(id)) {
+            if (p.getUsuario() == usuario) {
                 return true;
             }
         }
@@ -132,24 +133,14 @@ public class Evento {
         return usuario != null && creador.getId() == usuario.getId();
     }
 
-    private boolean participanteInvalido(ParticipanteEvento participante) {
-        return participante == null ||
-                participante.getUsuario() == null ||
-                esCreador(participante.getUsuario()) ||
-                usuarioEsParticipante(participante.getUsuario());
+    private double calcularImporteParticipante(GestorMorosos gestorMorosos) {
+        int totalParticipantes = gestorMorosos.obtenerParticipantesDeEvento(id).size() + 1;
+        return importeTotal / totalParticipantes;
     }
 
-    public double recalcularImporte() {
-        //TODO update en la tabla de participantes
-        double importeParticipante = importeTotal / getParticipantes();
-
-        return importeParticipante;
-    }
-    //endregion
-
-    //region PAGOS
-    public boolean tienePagosIniciados() {
-        //todo refactor buscando en la bd
+    private void actualizarImportesParticipantes(GestorMorosos gestorMorosos) {
+        double importeBase = calcularImporteParticipante(gestorMorosos);
+        gestorMorosos.actualizarImportesParticipantes(id, importeBase);
     }
     //endregion
 }

@@ -12,6 +12,8 @@ import Pagos.Pago;
 import Rankings.Ranking;
 import Usuarios.ParticipanteEvento;
 import Usuarios.Usuario;
+import jdk.jfr.Event;
+
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -82,24 +84,20 @@ public class GestorMorosos {
     }
 
     public boolean aniadirParticipanteAEvento(Evento evento, Usuario usuario) {
+
         if (evento == null || usuario == null) {
             return false;
         }
 
-        if (evento.tienePagosIniciados()) {
-            return false;
-        }
+        return evento.aniadirParticipantes(usuario, this);
+    }
 
-        if (evento.esCreador(usuario)) {
-            return false;
-        }
+    public boolean insertarParticipante(int idUsuario, int idEvento) {
 
-        if (evento.usuarioEsParticipante(usuario)) {
-            return false;
-        }
+        Usuario usuario = buscarUsuarioID(idUsuario);
+        Evento evento = buscarEvento(idEvento);
+        return participantesEventoDAO.insertar(usuario, evento);
 
-        ParticipanteEvento participante = new ParticipanteEvento(usuario, evento);
-        return evento.aniadirParticipantes(participante);
     }
 
     public List<Usuario> obtenerUsuariosDisponibles(Usuario usuarioActual) {
@@ -218,11 +216,11 @@ public class GestorMorosos {
 
     //region PARTICIPANTE EVENTO
 
-    public boolean sePuedeModificarParticipantes(Evento evento) {
+    public boolean sePuedeModificarParticipantes(int idEvento) {
 
-        List<ParticipanteEvento> listaPendientes = participantesEventoDAO.buscarPorEstadoPago(evento,
+        List<ParticipanteEvento> listaPendientes = participantesEventoDAO.buscarPorEstadoPago(idEvento,
                 EstadoPago.PENDIENTE);
-        List<ParticipanteEvento> listaTodosParticipantes = participantesEventoDAO.buscarTodos(evento);
+        List<ParticipanteEvento> listaTodosParticipantes = participantesEventoDAO.buscarTodos(idEvento);
 
         return listaPendientes.size() == listaTodosParticipantes.size();
 
@@ -240,9 +238,9 @@ public class GestorMorosos {
 
     }
 
-    public List<ParticipanteEvento> obtenerParticipantesDeEvento(Evento evento) {
+    public List<ParticipanteEvento> obtenerParticipantesDeEvento(int idEvento){
 
-        return participantesEventoDAO.buscarTodos(evento);
+        return participantesEventoDAO.buscarTodos(idEvento);
     }
 
     //endregion
@@ -282,6 +280,12 @@ public class GestorMorosos {
         }
 
         throw new UnknownPaymentException();
+    }
+
+    public boolean actualizarImportesParticipantes(int idEvento, double importeBase) {
+
+        Evento evento = buscarEvento(idEvento);
+        participantesEventoDAO.actualizarImportes(evento);
     }
 
     public void actualizarPenalizaciones() {
